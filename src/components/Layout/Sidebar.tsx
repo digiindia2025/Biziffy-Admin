@@ -143,48 +143,7 @@ export const Sidebar = () => {
             )}
           </li>
           
-          <li>
-            <button 
-              onClick={() => setOpenSupport(!openSupport)}
-              className={cn(
-                "w-full flex items-center justify-between px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                openSupport && "bg-blue-50 text-blue-600"
-              )}
-            >
-              <div className="flex items-center">
-                <LifeBuoy className="h-5 w-5 mr-3" />
-                <span>Support</span>
-              </div>
-              {openSupport ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            </button>
-            {openSupport && (
-              <ul className="ml-6 mt-1 space-y-1">
-                <li>
-                  <Link 
-                    to="/admin/support/department" 
-                    className={cn(
-                      "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/support/department") && "bg-blue-50 text-blue-600"
-                    )}
-                  >
-                    Department
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    to="/admin/support/tickets" 
-                    className={cn(
-                      "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/support/tickets") && "bg-blue-50 text-blue-600"
-                    )}
-                  >
-                    Support Ticket
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </li>
-
+         
           <li>
             <button 
               onClick={() => setOpenCategories(!openCategories)}
