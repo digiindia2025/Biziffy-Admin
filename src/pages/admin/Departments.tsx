@@ -6,41 +6,12 @@ import { EditButton, DeleteButton } from "@/components/ui/table-actions";
 import { useToast } from "@/hooks/use-toast";
 
 const departmentsData = [
-  // {
-  //   id: 14,
-  //   department: "Testing1",
-  //   status: "active"
-  // },
-  // {
-  //   id: 7,
-  //   department: "Test Department",
-  //   status: "inactive"
-  // },
-  // {
-  //   id: 6,
-  //   department: "Support (default)",
-  //   status: "active"
-  // },
-  // {
-  //   id: 5,
-  //   department: "Sales",
-  //   status: "active"
-  // },
-  // {
-  //   id: 4,
-  //   department: "Maintenance",
-  //   status: "active"
-  // },
-  // {
-  //   id: 3,
-  //   department: "Business",
-  //   status: "active"
-  // },
-  // {
-  //   id: 2,
-  //   department: "Project Manager",
-  //   status: "active"
-  // }
+  {
+    id: 1,
+    department: "aman1",
+    status: "active"
+  },
+ 
 ];
 
 const Departments = () => {

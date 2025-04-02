@@ -213,7 +213,7 @@ export const Sidebar = () => {
                     to="/admin/categories" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/categories") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/AllCategories") && "bg-blue-50 text-blue-600"
                     )}
                   >
                     All Categories
@@ -230,7 +230,7 @@ export const Sidebar = () => {
                     to="/admin/categories" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/categories") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/AddNewCategories") && "bg-blue-50 text-blue-600"
                     )}
                   >
                     Add NewCategories

@@ -20,11 +20,6 @@ const AllListings = () => {
   // Mock data for listings
   const listings = [
     { id: 1, title: "ki hal hai", category: "khana pina", user: "Aman Tiwari", createdDate: "1 days ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
-    // { id: 174, title: "Green Leaf Organic Medicine", category: "Doctors, Clinics & Hospitals", user: "vipin dhiman", createdDate: "3 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Not Approved", trustStatus: "Not Approved" },
-    // { id: 173, title: "Biziffy Local Business1", category: "Daily Home Needs", user: "Karamjeet Kaur", createdDate: "3 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Approved" },
-    // { id: 171, title: "Wooden Street", category: "Daily Home Needs", user: "Karamjeet Kaur", createdDate: "3 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Approved" },
-    // { id: 169, title: "Park Inn Hotel", category: "Hotels & Accommodation", user: "Karamjeet Kaur", createdDate: "4 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Approved" },
-    // { id: 168, title: "ABC Holidays Pvt Ltd", category: "Hotels & Accommodation", user: "Karamjeet Kaur", createdDate: "4 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Approved" },
   ];
 
   const getStatusBadge = (status: string) => {

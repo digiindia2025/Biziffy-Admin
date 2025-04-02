@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,12 @@ const AddNewAdvertisement = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({ ...formData, image: e.target.files[0] });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -43,7 +48,7 @@ const AddNewAdvertisement = () => {
       <div className="bg-white rounded-md border shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6"> 
-             <div className="space-y-2">
+            <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
@@ -128,7 +133,7 @@ const AddNewAdvertisement = () => {
               />
             </div>
             
-             <div className="space-y-2">
+            <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <select 
                 id="status"
@@ -148,10 +153,19 @@ const AddNewAdvertisement = () => {
             <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
               <div className="space-y-2">
                 <div className="flex justify-center"> 
-                   <Button
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                  />
+                  <Button
                     type="button"
                     variant="outline"
                     className="bg-gray-200 hover:bg-gray-300"
+                    onClick={() => document.getElementById('imageUpload')?.click()}
                   >
                     Upload Image
                   </Button>
@@ -163,14 +177,14 @@ const AddNewAdvertisement = () => {
             </div>
           </div> 
           
-           <Button 
+          <Button 
             type="submit" 
             className="bg-blue-500 hover:bg-blue-600 px-6"
           >
             Submit Advertise
           </Button>
         </form> 
-       </div> 
+      </div> 
     </AdminLayout>
   );
 };

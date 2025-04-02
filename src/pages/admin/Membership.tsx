@@ -8,54 +8,23 @@ import { HistoryButton, EmailButton, StatusButton } from "@/components/ui/table-
 import { Search } from "lucide-react";
 
 const membershipData = [
-  // {
-  //   id: 34,
-  //   membershipDetails: {
-  //     title: "Standard Plan"
-  //   },
-  //   userDetails: {
-  //     name: "Vipin Dhiman",
-  //     email: "er.dhiman17@gmail.com",
-  //     phone: "7404667888"
-  //   },
-  //   paymentGateway: "Razorpay",
-  //   paymentStatus: "Complete",
-  //   status: "Active",
-  //   purchaseDate: "2024-12-21",
-  //   expireDate: "2025-06-19"
-  // },
-  // {
-  //   id: 33,
-  //   membershipDetails: {
-  //     title: "Free Plan"
-  //   },
-  //   userDetails: {
-  //     name: "Karamjeet Kaur",
-  //     email: "karam@gmail.com",
-  //     phone: "7530979185"
-  //   },
-  //   paymentGateway: "Trial",
-  //   paymentStatus: "Complete",
-  //   status: "Active",
-  //   purchaseDate: "2024-12-19",
-  //   expireDate: "2025-12-19"
-  // },
-  // {
-  //   id: 32,
-  //   membershipDetails: {
-  //     title: "Standard Plan"
-  //   },
-  //   userDetails: {
-  //     name: "Karamjeet Kaur",
-  //     email: "karam@gmail.com",
-  //     phone: "7530979185"
-  //   },
-  //   paymentGateway: "Razorpay",
-  //   paymentStatus: "Cancel",
-  //   status: "Inactive",
-  //   purchaseDate: "2024-12-19",
-  //   expireDate: "2025-01-18"
-  // }
+  {
+    id: 1,
+    membershipDetails: {
+      title: "Standard Plan"
+    },
+    userDetails: {
+      name: "Aman Tiwari",
+      email: "amankumartiwari5255@gmail.com",
+      phone: "9031359720"
+    },
+    paymentGateway: "Razorpay",
+    paymentStatus: "Complete",
+    status: "Active",
+    purchaseDate: "2025-2-21",
+    expireDate: "2025-06-19"
+  },
+ 
 ];
 
 const Membership = () => {

@@ -5,69 +5,16 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const reviewsData = [
-  // {
-  //   id: 1,
-  //   userName: "Sachin",
-  //   title: "",
-  //   email: "sachin@dextrousinfo.in",
-  //   rating: 5.0,
-  //   content: "123456",
-  //   date: "2024-09-26 11:28:18"
-  // },
-  // {
-  //   id: 2,
-  //   userName: "Sachin",
-  //   title: "",
-  //   email: "sachin@dextrousinfo.in",
-  //   rating: 1.0,
-  //   content: "wewqewqe",
-  //   date: "2024-09-26 12:07:41"
-  // },
-  // {
-  //   id: 3,
-  //   userName: "Sachin",
-  //   title: "",
-  //   email: "sachin@dextrousinfo.in",
-  //   rating: 1.0,
-  //   content: "wewqewqe",
-  //   date: "2024-09-26 12:07:41"
-  // },
-  // {
-  //   id: 4,
-  //   userName: "vipin",
-  //   title: "",
-  //   email: "er.dhiman17@gmail.com",
-  //   rating: 4.0,
-  //   content: "tesing",
-  //   date: "2024-09-27 04:53:21"
-  // },
-  // {
-  //   id: 5,
-  //   userName: "admin",
-  //   title: "",
-  //   email: "admin@gmail.com",
-  //   rating: 5.0,
-  //   content: "Maximum Value Safe & Hassle Free",
-  //   date: "2024-09-27 11:28:59"
-  // },
-  // {
-  //   id: 6,
-  //   userName: "pardeep kumar",
-  //   title: "",
-  //   email: "cash2phoneofficial@gmail.com",
-  //   rating: 5.0,
-  //   content: "good service a good to go.",
-  //   date: "2024-09-30 12:38:43"
-  // },
-  // {
-  //   id: 7,
-  //   userName: "Sachin",
-  //   title: "",
-  //   email: "sachin@dextrousinfo.in",
-  //   rating: 5.0,
-  //   content: "this is good company this is good company this is good company this is good company this is good company",
-  //   date: "2024-10-09 10:21:56"
-  // }
+  {
+    id: 1,
+    userName: "amantiwari2357",
+    title: "",
+    email: "amankumartiwari5255@gmail.com",
+    rating: 5.0,
+    content: "00001",
+    date: "2025-03-31 11:28:18"
+  },
+  
 ];
 
 const Reviews = () => {

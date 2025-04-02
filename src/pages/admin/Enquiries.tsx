@@ -2,62 +2,14 @@
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 
 const enquiriesData = [
-  // {
-  //   id: 1,
-  //   userName: "sachin@dextrousinfo.in",
-  //   title: "sunil",
-  //   name: "kumar",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 2,
-  //   userName: "sachin@dextrousinfo.in",
-  //   title: "good",
-  //   name: "noon",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 3,
-  //   userName: "sachin@dextrousinfo.in",
-  //   title: "Sachin",
-  //   name: "fsdfs",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 4,
-  //   userName: "sachin@dextrousinfo.in",
-  //   title: "ee",
-  //   name: "ee",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 5,
-  //   userName: "",
-  //   title: "vipin",
-  //   name: "i want sofa set",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 6,
-  //   userName: "super_admin",
-  //   title: "Pardeep Kumar",
-  //   name: "abcs",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 7,
-  //   userName: "sachin@dextrousinfo.in",
-  //   title: "Karamjeet Kaur",
-  //   name: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-  //   requirement: ""
-  // },
-  // {
-  //   id: 8,
-  //   userName: "",
-  //   title: "Abhishek Tyagi",
-  //   name: "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
-  //   requirement: ""
-  // }
+  {
+    id: 1,
+    userName: "amantiwari2357",
+    title: "Aman",
+    name: "Tiwari",
+    requirement: "jaldi me "
+  },
+  
 ];
 
 const Enquiries = () => {

@@ -39,18 +39,18 @@ const AddChildCategory = () => {
   return (
     <AdminLayout title="Add New Child Category">
       <div className="flex justify-end mb-4">
-        {/* <Button asChild className="bg-blue-500 hover:bg-blue-600">
+        <Button asChild className="bg-blue-500 hover:bg-blue-600">
           <Link to="/admin/child-categories">All Child Categories</Link>
-        </Button> */}
+        </Button>
       </div>
       
       <div className="bg-white p-6 rounded-lg shadow-sm border">
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             <div className="space-y-2">
-              {/* <Label htmlFor="parentCategory" className="text-base after:content-['*'] after:text-red-500 after:ml-1">
+              <Label htmlFor="parentCategory" className="text-base after:content-['*'] after:text-red-500 after:ml-1">
                 Select Parent Category
-              </Label> */}
+              </Label>
               <select 
                 id="parentCategory"
                 name="parentCategory"
@@ -59,17 +59,17 @@ const AddChildCategory = () => {
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
-                {/* <option value="">Select Category</option> */}
-                {/* <option value="1">Doctors, Clinics & Hospitals</option> */}
-                {/* <option value="2">Daily Needs</option>
-                <option value="3">Education</option> */}
+                <option value="">Select Category</option> 
+                <option value="1">Doctors, Clinics & Hospitals</option>
+                 <option value="2">Daily Needs</option>
+                <option value="3">Education</option>
               </select>
             </div>
             
             <div className="space-y-2">
-              {/* <Label htmlFor="subCategory" className="text-base after:content-['*'] after:text-red-500 after:ml-1">
+              <Label htmlFor="subCategory" className="text-base after:content-['*'] after:text-red-500 after:ml-1">
                 Select Sub Category
-              </Label> */}
+              </Label>
               <select 
                 id="subCategory"
                 name="subCategory"
@@ -78,15 +78,15 @@ const AddChildCategory = () => {
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
-                {/* <option value="">Select Sub Category</option>
+                <option value="">Select Sub Category</option>
                 <option value="1">Pharmacy, Chemists & Medical Supplies</option>
                 <option value="2">Doctors</option>
-                <option value="3">Hospitals</option> */}
+                <option value="3">Hospitals</option>
               </select>
             </div>
             
             <div>
-              {/* <Label htmlFor="childCategoryName" className="text-base">Child Category</Label> */}
+              <Label htmlFor="childCategoryName" className="text-base">Child Category</Label>
               <Input 
                 id="childCategoryName"
                 name="childCategoryName"
@@ -98,25 +98,25 @@ const AddChildCategory = () => {
             </div>
             
             <div>
-              {/* <Label className="text-base">Upload Child Category Image</Label> */}
+              <Label className="text-base">Upload Child Category Image</Label>
               <div className="mt-1">
-                {/* <Button 
+                <Button 
                   type="button" 
                   variant="outline" 
                   onClick={handleImageUpload}
                   className="bg-blue-500 text-white hover:bg-blue-600"
                 >
                   Upload Image
-                </Button> */}
+                </Button>
               </div>
             </div>
             
-              {/* <Button 
+              <Button 
                 type="submit" 
                 className="bg-blue-500 hover:bg-blue-600"
               >
                 Submit
-              </Button> */}
+              </Button>
           </div>
         </form>
       </div>

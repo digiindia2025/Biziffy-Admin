@@ -6,26 +6,12 @@ import { EditButton, DeleteButton } from "@/components/ui/table-actions";
 import { useToast } from "@/hooks/use-toast";
 
 const linksData = [
-  // {
-  //   id: 1,
-  //   link: "https://www.dextrousinfo.com/",
-  //   title: "Dextrous"
-  // },
-  // {
-  //   id: 2,
-  //   link: "https://classified.dextrous.co.in/noida/bizify-local-business",
-  //   title: "local-business"
-  // },
-  // {
-  //   id: 3,
-  //   link: "https://classified.dextrous.co.in/noida/wooden-street",
-  //   title: "Wooden Street"
-  // },
-  // {
-  //   id: 4,
-  //   link: "https://www.sjashospitals.com/",
-  //   title: "Test12"
-  // }
+  {
+    id: 1,
+    link: "biziffy-admin.vercel.app",
+    title: "nitin"
+  },
+ 
 ];
 
 const Links = () => {

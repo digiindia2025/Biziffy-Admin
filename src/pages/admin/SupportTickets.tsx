@@ -8,34 +8,14 @@ import { ViewButton, DeleteButton, EditButton } from "@/components/ui/table-acti
 import { useToast } from "@/hooks/use-toast";
 
 const supportTicketsData = [
-  // {
-  //   id: 8,
-  //   title: "package issues",
-  //   priority: "urgent",
-  //   dateTime: "10/03/2025 16:13:49",
-  //   status: "close"
-  // },
-  // {
-  //   id: 7,
-  //   title: "Testing",
-  //   priority: "high",
-  //   dateTime: "27/11/2024 12:37:28",
-  //   status: "open"
-  // },
-  // {
-  //   id: 6,
-  //   title: "Add New Ticket",
-  //   priority: "medium",
-  //   dateTime: "20/11/2024 05:14:39",
-  //   status: "close"
-  // },
-  // {
-  //   id: 5,
-  //   title: "image not uploading",
-  //   priority: "urgent",
-  //   dateTime: "13/11/2024 06:02:38",
-  //   status: "close"
-  // },
+  {
+    id: 1,
+    title: "package issues",
+    priority: "urgent",
+    dateTime: "10/03/2025 16:13:49",
+    status: "close"
+  },
+ 
 ];
 
 const SupportTickets = () => {

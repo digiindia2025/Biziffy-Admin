@@ -2,61 +2,18 @@
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 
 const contactData = [
-  // {
-  //   firstName: "admin",
-  //   lastName: "dextrousinfo",
-  //   email: "farhancse111@gmail.com",
-  //   phone: "07667711493",
-  //   message: "asd",
-  //   state: "",
-  //   city: "",
-  //   services: "UX design",
-  //   createdAt: "2024-09-23 09:08:13"
-  // },
-  // {
-  //   firstName: "test",
-  //   lastName: "dextrousinfo",
-  //   email: "farhancse111@gmail.com",
-  //   phone: "07667711493",
-  //   message: "asd",
-  //   state: "",
-  //   city: "",
-  //   services: "Website design",
-  //   createdAt: "2024-09-23 09:08:44"
-  // },
-  // {
-  //   firstName: "ss",
-  //   lastName: "aa",
-  //   email: "outline@gmail.com",
-  //   phone: "9810019909",
-  //   message: "aa",
-  //   state: "",
-  //   city: "",
-  //   services: "",
-  //   createdAt: "2024-10-09 11:51:00"
-  // },
-  // {
-  //   firstName: "aa",
-  //   lastName: "aa",
-  //   email: "outline@gmail.com",
-  //   phone: "9810019909",
-  //   message: "asas",
-  //   state: "",
-  //   city: "",
-  //   services: "Website design, Content creation, UX design, Strategy & consulting",
-  //   createdAt: "2024-10-09 11:52:33"
-  // },
-  // {
-  //   firstName: "Pardeep",
-  //   lastName: "Kumar",
-  //   email: "pkpardeepkumar2@gmail.com",
-  //   phone: "09729606097",
-  //   message: "call",
-  //   state: "",
-  //   city: "",
-  //   services: "Website design",
-  //   createdAt: "2024-11-20 08:23:49"
-  // }
+  {
+    firstName: "Aman",
+    lastName: "Tiwari",
+    email: "amankumartiwari@gmail.com",
+    phone: "+91-9031359720",
+    message: "hello digi",
+    state: "up-16",
+    city: "Banaras",
+    services: "UX design",
+    createdAt: "2025-02-23 09:08:13"
+  },
+  
 ];
 
 const ContactUs = () => {

@@ -28,15 +28,7 @@ const AllUsers = () => {
   // Mock data for users
   const users = [
     { id: 1, name: "Aman Tiwari", email: "amantiwari@gmail.com", phone: "9031359720", status: "Active" },
-    // { id: 136, name: "sachin", email: "sachinukdex@gmail.com", phone: "", status: "Active" },
-    // { id: 135, name: "ajit", email: "ajitdex@gmail.com", phone: "", status: "Active" },
-    // { id: 133, name: "Roshni Kumari", email: "roshni@gmail.com", phone: "7965423044", status: "Active" },
-    // { id: 130, name: "Karamjeet Kaur", email: "dextrous7833@gmail.com", phone: "7530979185", status: "Active" },
-    // { id: 127, name: "arnav dhiman dhiman", email: "arnavdhiman379@gmail.com", phone: "8888888888", status: "Active" },
-    // { id: 126, name: "farhan.dextrousinf", email: "farhancse111@gmail.com", phone: "07667711493", status: "Active" },
-    // { id: 125, name: "farhan.dextrousinf@gmail.com", email: "farhan.dextrousinf@gmail.com", phone: "", status: "Active" },
-    // { id: 124, name: "Indra Pratap Singh", email: "indra@dextrousinf.com", phone: "", status: "Active" },
-    // { id: 123, name: "pardeep kumar jangra", email: "cash2phoneofficial@gmail.com", phone: "7404667888", status: "Active" },
+    
   ];
 
   const getStatusBadge = (status: string) => {

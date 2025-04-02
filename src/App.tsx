@@ -25,6 +25,8 @@ import AllAdvertisements from "./pages/admin/AllAdvertisements";
 import AddNewAdvertisement from "./pages/admin/AddNewAdvertisement";
 import AllUsers from "./pages/admin/AllUsers";
 import DeactivatedUsers from "./pages/admin/DeactivatedUsers";
+import AllCategories from "./pages/admin/AllCategories";
+import AddNewCategories from "./pages/admin/AddNewCategories";
 import NotFound from "./pages/NotFound";
 
 
@@ -59,6 +61,8 @@ const App = () => (
             <Route path="/admin/advertisements/new" element={<ProtectedRoute><AddNewAdvertisement /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute><AllUsers /></ProtectedRoute>} />
             <Route path="/admin/users/deactivated" element={<ProtectedRoute><DeactivatedUsers /></ProtectedRoute>} />
+            <Route path="/admin/categories" element={<ProtectedRoute><AllCategories /></ProtectedRoute>} />
+            <Route path="/admin/categories/add" element={<ProtectedRoute><AddNewCategories /></ProtectedRoute>} />
             
             {/* Logout Route */}
             <Route 
