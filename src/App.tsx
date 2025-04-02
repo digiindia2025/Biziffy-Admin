@@ -19,7 +19,14 @@ import Departments from "./pages/admin/Departments";
 import ContactUs from "./pages/admin/ContactUs";
 import ChildCategories from "./pages/admin/ChildCategories";
 import AddChildCategory from "./pages/admin/AddChildCategory";
+import ListingDetails from "./pages/admin/ListingDetails";
+import AllListings from "./pages/admin/AllListings";
+import AllAdvertisements from "./pages/admin/AllAdvertisements";
+import AddNewAdvertisement from "./pages/admin/AddNewAdvertisement";
+import AllUsers from "./pages/admin/AllUsers";
+import DeactivatedUsers from "./pages/admin/DeactivatedUsers";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
@@ -37,6 +44,8 @@ const App = () => (
             {/* Protected Routes */}
             <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/admin/listings" element={<ProtectedRoute><AllListings /></ProtectedRoute>} />
+            <Route path="/admin/listings/details/:id" element={<ProtectedRoute><ListingDetails /></ProtectedRoute>} />
             <Route path="/admin/membership" element={<ProtectedRoute><Membership /></ProtectedRoute>} />
             <Route path="/admin/reviews" element={<ProtectedRoute><Reviews /></ProtectedRoute>} />
             <Route path="/admin/links" element={<ProtectedRoute><Links /></ProtectedRoute>} />
@@ -46,6 +55,10 @@ const App = () => (
             <Route path="/admin/contact-us" element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
             <Route path="/admin/child-categories" element={<ProtectedRoute><ChildCategories /></ProtectedRoute>} />
             <Route path="/admin/child-categories/add" element={<ProtectedRoute><AddChildCategory /></ProtectedRoute>} />
+            <Route path="/admin/advertisements" element={<ProtectedRoute><AllAdvertisements /></ProtectedRoute>} />
+            <Route path="/admin/advertisements/new" element={<ProtectedRoute><AddNewAdvertisement /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute><AllUsers /></ProtectedRoute>} />
+            <Route path="/admin/users/deactivated" element={<ProtectedRoute><DeactivatedUsers /></ProtectedRoute>} />
             
             {/* Logout Route */}
             <Route 

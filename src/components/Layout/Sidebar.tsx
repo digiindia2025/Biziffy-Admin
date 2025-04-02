@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -34,11 +35,11 @@ export const Sidebar = () => {
       <div className="p-4 border-b">
         <div className="flex items-center space-x-2">
           <div className="flex">
-            <img 
-              src={`/images/profile-icon.png`} 
-              alt="BiZiffy Logo" 
-              className="w-50 h-20"
-            />
+            
+          </div>
+          <div>
+            <img src="/images/profile-icon.png" alt="Logo" className="h-20 w-30" />
+            
           </div>
         </div>
       </div>
@@ -68,37 +69,81 @@ export const Sidebar = () => {
             </Link>
           </li>
           
-          
           <li>
             <button 
-              onClick={() => setOpenCategories(!openCategories)}
+              onClick={() => setOpenListingManage(!openListingManage)}
               className={cn(
                 "w-full flex items-center justify-between px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                openCategories && "bg-blue-50 text-blue-600"
+                openListingManage && "bg-blue-50 text-blue-600"
               )}
             >
               <div className="flex items-center">
-                <FolderTree className="h-5 w-5 mr-3" />
-                <span>Listening Manage</span>
+                <ClipboardList className="h-5 w-5 mr-3" />
+                <span>Listing Manage</span>
               </div>
-              {openCategories ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              {openListingManage ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
             </button>
-            {openCategories && (
+            {openListingManage && (
               <ul className="ml-6 mt-1 space-y-1">
                 <li>
                   <Link 
-                    to="/admin/categories" 
+                    to="/admin/listings" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/categories") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/listings") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    All UserListening
+                    All Listings
                   </Link>
                 </li>
               </ul>
             )}
           </li>
+          
+
+
+          <li>
+            <button 
+              onClick={() => setOpenAdvertisementsManage(!openAdvertisementsManage)}
+              className={cn(
+                "w-full flex items-center justify-between px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
+                openAdvertisementsManage && "bg-blue-50 text-blue-600"
+              )}
+            >
+              <div className="flex items-center">
+                <PanelLeft className="h-5 w-5 mr-3" />
+                <span>Advertis Manage</span>
+              </div>
+              {openAdvertisementsManage ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </button>
+            {openAdvertisementsManage && (
+              <ul className="ml-6 mt-1 space-y-1">
+                <li>
+                  <Link 
+                    to="/admin/advertisements" 
+                    className={cn(
+                      "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
+                      isActive("/admin/advertisements") && "bg-blue-50 text-blue-600"
+                    )}
+                  >
+                    All Advertise
+                  </Link>
+                </li>
+                <li>
+                  <Link 
+                    to="/admin/advertisements/new" 
+                    className={cn(
+                      "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
+                      isActive("/admin/advertisements/new") && "bg-blue-50 text-blue-600"
+                    )}
+                  >
+                    Add NewAdvertise
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+          
 
 
           <li>
@@ -110,7 +155,7 @@ export const Sidebar = () => {
               )}
             >
               <div className="flex items-center">
-                <LifeBuoy className="h-5 w-5 mr-3" />
+                <Users className="h-5 w-5 mr-3" />
                 <span>User Manage</span>
               </div>
               {openUserManage ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -119,31 +164,34 @@ export const Sidebar = () => {
               <ul className="ml-6 mt-1 space-y-1">
                 <li>
                   <Link 
-                    to="/admin/support/department" 
+                    to="/admin/users" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/support/department") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/users") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    All User
+                    All Users
                   </Link>
                 </li>
                 <li>
                   <Link 
-                    to="/admin/support/tickets" 
+                    to="/admin/users/deactivated" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/support/tickets") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/users/deactivated") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    Deactivated User
+                    Deactivated Users
                   </Link>
                 </li>
               </ul>
             )}
           </li>
+
+
+
+
           
-         
           <li>
             <button 
               onClick={() => setOpenCategories(!openCategories)}
@@ -174,6 +222,23 @@ export const Sidebar = () => {
               </ul>
             )}
           </li>
+
+          {openCategories && (
+              <ul className="ml-6 mt-1 space-y-1">
+                <li>
+                  <Link 
+                    to="/admin/categories" 
+                    className={cn(
+                      "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
+                      isActive("/admin/categories") && "bg-blue-50 text-blue-600"
+                    )}
+                  >
+                    Add NewCategories
+                  </Link>
+                </li>
+              </ul>
+            )}
+          {/* </li> */}
           
           <li>
             <button 
@@ -210,7 +275,7 @@ export const Sidebar = () => {
                       isActive("/admin/subcategories/add") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    Add New Subcategory
+                    Add NewSubcategory
                   </Link>
                 </li>
               </ul>
@@ -241,7 +306,7 @@ export const Sidebar = () => {
                       isActive("/admin/child-categories") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    All Child Categories
+                    All ChildCategories
                   </Link>
                 </li>
                 <li>
@@ -252,7 +317,7 @@ export const Sidebar = () => {
                       isActive("/admin/child-categories/add") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    Add New Child Category
+                    Add NewChildCategory
                   </Link>
                 </li>
               </ul>
