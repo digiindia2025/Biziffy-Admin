@@ -8,15 +8,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
 
 const childCategoriesData = [
-  // {
-  //   id: 25,
-  //   childCategory: "Ayurvedic Medicine",
-  //   image: "",
-  //   subcategory: "Pharmacy, Chemists & Medical Supplies",
-  //   mainCategory: "Doctors, Clinics & Hospitals",
-  //   status: "active",
-  //   createDate: "21-12-2024"
-  // }
+  {
+    id: 1,
+    childCategory: "kuch bhi",
+    image: "/images/profile-icon.png",
+    subcategory: "vishnu, nitin & aman",
+    mainCategory: "Deepak, Aman & Nitin",
+    status: "active",
+    createDate: "31-03-2025"
+  }
 ];
 
 const ChildCategories = () => {

@@ -19,7 +19,7 @@ const AllListings = () => {
   
   // Mock data for listings
   const listings = [
-    // { id: 176, title: "aaaaaaaa.a", category: "Daily Home Needs", user: "Karamjeet Kaur", createdDate: "3 months ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
+    { id: 1, title: "ki hal hai", category: "khana pina", user: "Aman Tiwari", createdDate: "1 days ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
     // { id: 174, title: "Green Leaf Organic Medicine", category: "Doctors, Clinics & Hospitals", user: "vipin dhiman", createdDate: "3 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Not Approved", trustStatus: "Not Approved" },
     // { id: 173, title: "Biziffy Local Business1", category: "Daily Home Needs", user: "Karamjeet Kaur", createdDate: "3 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Approved" },
     // { id: 171, title: "Wooden Street", category: "Daily Home Needs", user: "Karamjeet Kaur", createdDate: "3 months ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Approved" },
@@ -66,10 +66,10 @@ const AllListings = () => {
             className="px-4 py-2 border rounded-md"
             defaultValue="Bulk Action"
           >
-            {/* <option value="Bulk Action">Bulk Action</option>
+            <option value="Bulk Action">Bulk Action</option>
             <option value="Delete">Delete</option>
             <option value="Approve">Approve</option>
-            <option value="Reject">Reject</option> */}
+            <option value="Reject">Reject</option>
           </select>
           <Button className="bg-blue-500 hover:bg-blue-600">
             Apply
@@ -85,7 +85,7 @@ const AllListings = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Button className="bg-blue-500 hover:bg-blue-600">
-            {/* Export to CSV */}
+            Export to CSV
           </Button>
         </div>
       </div>

@@ -19,7 +19,7 @@ const AllAdvertisements = () => {
   
   // Mock data for advertisements
   const advertisements = [
-//     { id: 41, category: "Advertising & Marketing, Advertising & PR Agencies", title: "https://classified.dextrous.co.in/karma/mediaman-advertising", type: "Listing detail center", status: "Active", imageUrl: "/lovable-uploads/eecfa68c-b695-402c-bc7d-f128c55c2c6c.png" },
+    { id: 1, category: "Advertising & Marketing", title: "heloo hii", type: "listener", status: "Active", imageUrl: "/images/profile-icon.png" },
 //     { id: 40, category: "Advertising & Marketing, Advertising & PR Agencies", title: "https://classified.dextrous.co.in/karma/mediaman-advertising", type: "Listing detail Right", status: "Active", imageUrl: "/lovable-uploads/eecfa68c-b695-402c-bc7d-f128c55c2c6c.png" },
 //     { id: 39, category: "Gifting", title: "test", type: "Listing detail center", status: "Active", imageUrl: "/lovable-uploads/eecfa68c-b695-402c-bc7d-f128c55c2c6c.png" },
 //     { id: 38, category: "Gifting", title: "test", type: "Listing detail Right", status: "Active", imageUrl: "/lovable-uploads/eecfa68c-b695-402c-bc7d-f128c55c2c6c.png" },
@@ -69,7 +69,7 @@ const AllAdvertisements = () => {
           />
           <Link to="/admin/advertisements/new">
             <Button className="bg-blue-500 hover:bg-blue-600">
-              Add Advertisement
+              All Advertisement
             </Button>
           </Link>
         </div>

@@ -27,7 +27,7 @@ const AllUsers = () => {
   
   // Mock data for users
   const users = [
-    // { id: 137, name: "Sachin Kumar", email: "sachindextrous@gmail.com", phone: "", status: "Active" },
+    { id: 1, name: "Aman Tiwari", email: "amantiwari@gmail.com", phone: "9031359720", status: "Active" },
     // { id: 136, name: "sachin", email: "sachinukdex@gmail.com", phone: "", status: "Active" },
     // { id: 135, name: "ajit", email: "ajitdex@gmail.com", phone: "", status: "Active" },
     // { id: 133, name: "Roshni Kumari", email: "roshni@gmail.com", phone: "7965423044", status: "Active" },
@@ -64,12 +64,12 @@ const AllUsers = () => {
             className="px-4 py-2 border rounded-md"
             defaultValue="Bulk Action"
           >
-            {/* <option value="Bulk Action">Bulk Action</option>
+            <option value="Bulk Action">Bulk Action</option>
             <option value="Delete">Delete</option>
-            <option value="Deactivate">Deactivate</option> */}
+            <option value="Deactivate">Deactivate</option>
           </select>
           <Button className="bg-blue-500 hover:bg-blue-600">
-            {/* Apply */}
+            Apply
           </Button>
         </div>
         
@@ -82,7 +82,7 @@ const AllUsers = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Button className="bg-blue-500 hover:bg-blue-600">
-            {/* Export to CSV */}
+            Export to CSV 
           </Button>
         </div>
       </div>

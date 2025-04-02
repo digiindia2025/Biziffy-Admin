@@ -40,10 +40,10 @@ const AddNewAdvertisement = () => {
         </Link>
       </div>
       
-      {/* <div className="bg-white rounded-md border shadow-sm p-6">
+      <div className="bg-white rounded-md border shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6"> */}
-            {/* <div className="space-y-2">
+          <div className="grid md:grid-cols-2 gap-6"> 
+             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
@@ -54,8 +54,8 @@ const AddNewAdvertisement = () => {
                 required
               />
             </div>
-             */}
-            {/* <div className="space-y-2">
+            
+            <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
               <select 
                 id="type"
@@ -71,8 +71,8 @@ const AddNewAdvertisement = () => {
                 <option value="Listing Bottom">Listing Bottom</option>
               </select>
             </div>
-             */}
-            {/* <div className="space-y-2">
+            
+            <div className="space-y-2">
               <Label htmlFor="businessCategory">Business Category *</Label>
               <select 
                 id="businessCategory"
@@ -102,8 +102,8 @@ const AddNewAdvertisement = () => {
                 <option value="Advertising & PR Agencies">Advertising & PR Agencies</option>
               </select>
             </div>
-             */}
-            {/* <div className="space-y-2">
+            
+            <div className="space-y-2">
               <Label htmlFor="childCategory">Child Category</Label>
               <select 
                 id="childCategory"
@@ -127,8 +127,8 @@ const AddNewAdvertisement = () => {
                 required
               />
             </div>
-             */}
-            {/* <div className="space-y-2">
+            
+             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
               <select 
                 id="status"
@@ -147,8 +147,8 @@ const AddNewAdvertisement = () => {
             <Label>Advertisement Image</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
               <div className="space-y-2">
-                <div className="flex justify-center"> */}
-                  {/* <Button
+                <div className="flex justify-center"> 
+                   <Button
                     type="button"
                     variant="outline"
                     className="bg-gray-200 hover:bg-gray-300"
@@ -161,16 +161,16 @@ const AddNewAdvertisement = () => {
                 </p>
               </div>
             </div>
-          </div> */}
+          </div> 
           
-          {/* <Button 
+           <Button 
             type="submit" 
             className="bg-blue-500 hover:bg-blue-600 px-6"
           >
             Submit Advertise
           </Button>
-        </form> */}
-      {/* </div> */}
+        </form> 
+       </div> 
     </AdminLayout>
   );
 };
