@@ -8,32 +8,33 @@ import { useState, useEffect } from "react";
 // Mock data for a listing - in a real app, this would come from an API
 const mockListingData = {
   id: 176,
-  businessName: "aaaaaaaa.a",
-  category: "Daily Home Needs",
-  subCategory: "Grocery & General Stores",
-  childCategory: "",
-  phone: "+919810019909",
+  businessName: "software development",
+  category: "Software & Web Development",
+  subCategory: "Software Development",
+  childCategory: "  Software Development",
+  phone: "+91-9031359720",
   hidePhoneNumber: false,
-  services: "aa",
-  ssssssssssss: "ssss, ssssss",
-  sssssssssssss: "",
-  ssssssssss: "",
+  services: "software development, web development",
+//   ssssssssssss: "aman, anaman",
+//   sssssssssssss: "",
+//   ssssssssss: "",
   viewCount: 0,
   status: "Pending",
-  address: "ssssssss",
+  address: "greater noida",
   city: "Noida",
-  landmark: "ssssssss",
-  pin: "247667",
+  landmark: "9031359720",
+  pin: "202357",
   state: "Uttar Pradesh",
   country: "India",
-  description: `aase our free Lorem Ipsum Generator if you are looking for copyright free dummy content for your websites, mockups, wireframes and articles. Use our free Lorem Ipsum Generator if you are looking for copyright free dummy content for your websites, mockups, wireframes and articles. Use our free Lorem Ipsum Generator if you are looking for copyright free dummy content for your websites, mockups, wireframes and articles. Use our free Lorem Ipsum Generator if you are looking for copyright free dummy content for your websites, mockups, wireframes and articles. Use our free Lorem Ipsum Generator if you are looking for copyright free dummy content for your websites, mockups, wireframes and articles.`,
+  description: `aase our free Lorem Ipsum`,
   gstNo: "",
-  cin: "aa",
+  cin: "N/A",
   entity: "Proprietorship",
   user: {
-    name: "Karamjeet Kaur",
-    email: "dextrous7833@gmail.com",
-    phone: "7530979185"
+    name: "Aman Tiwari",
+    email: "aman@gmail.com",
+    phone: "9031359720",
+    profileImage: "./images/profile-icon.png",
   }
 };
 
@@ -64,10 +65,18 @@ const ListingDetails = () => {
         <CardContent className="p-6">
           <div className="mb-4">
             <h3 className="text-lg font-medium mb-2">Thumb Image:</h3>
-            <div className="border border-gray-300 rounded-md w-64 h-64 flex items-center justify-center bg-gray-100">
+            <div className="border border-gray-300 rounded-md w-32 h-32 flex items-center justify-center bg-gray-100">
               <div className="text-gray-400 text-center p-4">
                 <div className="text-5xl mb-2">?</div>
-                <p>No Image Available</p>
+
+                <img
+                  src="/images/profile-icon.png"
+                   alt="Profile"
+                   className="w-16 h-16  mb-2"
+                     />
+
+
+                {/* <p className="text-sm text-gray-500">No image available</p> */}
               </div>
             </div>
           </div>
@@ -81,6 +90,7 @@ const ListingDetails = () => {
             <h3 className="text-lg font-medium mb-2">User Info:</h3>
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 mr-4">
+                
                 <span className="text-2xl">👤</span>
               </div>
               <div>

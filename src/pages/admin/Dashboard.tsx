@@ -1,8 +1,7 @@
-
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 
@@ -11,20 +10,20 @@ const Dashboard = () => {
   
   // Mock data for Recent Users
   const recentUsers = [
-    // { id: 137, name: "Sachin Kumar", email: "sachindextrous@gmail.com", date: "26 Dec 2024" },
-    // { id: 136, name: "sachin", email: "sachinukdev@gmail.com", date: "19 Dec 2024" },
-    // { id: 135, name: "ajit", email: "ajitdev@gmail.com", date: "10 Dec 2024" },
-    // { id: 133, name: "Roshni Kumari", email: "roshni@gmail.com", phone: "7965423304444", date: "22 Nov 2024" },
-    // { id: 130, name: "Karamjeet Kaur", email: "dextrous7833@gmail.com", phone: "7530979185", date: "18 Nov 2024" }
+    { id: 1, name: "aman", email: "aman@gmail.com",  phone: "9031359720", date: "26 March 2025" },
+    { id: 2, name: "gourav", email: "gourav@gmail.com",  phone: "9319846114", date: "27 March 2025" },
+    { id: 3, name: "vishnu", email: "vishnu@gmail.com",  phone: "9315949626", date: "28 March 2025" },
+    { id: 4, name: "nitin", email: "nitin.com", phone: "9355239436", date: "29 March 2025" },
+    { id: 5, name: "sanjay ji", email: "sanjay@gmail.com", phone: "8504069643", date: "30 March 2025" }
   ];
   
   // Mock data for Recent Listings
   const recentListings = [
-    // { id: 176, user: "Karamjeet Kaur", email: "dextrous7833@gmail.com", phone: "7530979185", title: "aaaaaaaa.a", date: "26 Dec 2024" },
-    // { id: 174, user: "vipin dhiman", email: "er.dhiman17@gmail.com", phone: "7604667888", title: "Green Leaf Organic Medicine", date: "21 Dec 2024" },
-    // { id: 173, user: "Karamjeet Kaur", email: "dextrous7833@gmail.com", phone: "7530979185", title: "Biziffy Local Business1", date: "13 Dec 2024" },
-    // { id: 171, user: "Karamjeet Kaur", email: "dextrous7833@gmail.com", phone: "7530979185", title: "Wooden Street", date: "10 Dec 2024" },
-    // { id: 169, user: "Karamjeet Kaur", email: "dextrous7833@gmail.com", phone: "7530979185", title: "Park Inn Hotel", date: "27 Nov 2024" }
+    { id: 1, user: "Mukesh", email: "mukesh@gmail.com", phone: "7530979185", title: ".........", date: "23 march 2025" },
+    { id: 2, user: "aman", email: "er.dhiman17@gmail.com", phone: "7604667888", title: "...........", date: "24 march 2025" },
+    { id: 3, user: "nikunj", email: "dextrous7833@gmail.com", phone: "7530979185", title: ".......", date: "25 march 2025" },
+    { id: 4, user: "deepak", email: "dextrous7833@gmail.com", phone: "7530979185", title: ".....", date: "26 march 2025" },
+    { id: 5, user: "akash", email: "dextrous7833@gmail.com", phone: "7530979185", title: "......", date: "27 march 2025" }
   ];
 
   return (
@@ -106,10 +105,10 @@ const Dashboard = () => {
                       </td>
                       <td className="py-3 px-4">
                         <Link to={`/admin/listings/details/${listing.id}`}>
-                          {/* <Button size="sm" variant="default" className="bg-blue-500 hover:bg-blue-600 text-white">
+                          <Button size="sm" variant="default" className="bg-blue-500 hover:bg-blue-600 text-white">
                             <Eye className="h-4 w-4 mr-1" />
                             View
-                          </Button> */}
+                          </Button>
                         </Link>
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-500">{listing.date}</td>
