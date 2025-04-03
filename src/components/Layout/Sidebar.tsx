@@ -30,6 +30,7 @@ export const Sidebar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+
   return (
     <div className="w-64 bg-white border-r h-screen overflow-y-auto flex-shrink-0">
       <div className="p-4 border-b">
@@ -213,33 +214,29 @@ export const Sidebar = () => {
                     to="/admin/categories" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/AllCategories") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/categories") && "bg-blue-50 text-blue-600"
                     )}
                   >
                     All Categories
                   </Link>
                 </li>
-              </ul>
-            )}
-          </li>
-
-          {openCategories && (
-              <ul className="ml-6 mt-1 space-y-1">
                 <li>
                   <Link 
-                    to="/admin/categories" 
+                    to="/admin/categories/add" 
                     className={cn(
                       "flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-600",
-                      isActive("/admin/AddNewCategories") && "bg-blue-50 text-blue-600"
+                      isActive("/admin/categories/add") && "bg-blue-50 text-blue-600"
                     )}
                   >
-                    Add NewCategories
+                    Add NewCategory
                   </Link>
                 </li>
               </ul>
             )}
-          {/* </li> */}
+          </li>
           
+
+
           <li>
             <button 
               onClick={() => setOpenSubcategories(!openSubcategories)}
@@ -281,6 +278,8 @@ export const Sidebar = () => {
               </ul>
             )}
           </li>
+
+
           
           <li>
             <button 

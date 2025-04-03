@@ -26,7 +26,9 @@ import AddNewAdvertisement from "./pages/admin/AddNewAdvertisement";
 import AllUsers from "./pages/admin/AllUsers";
 import DeactivatedUsers from "./pages/admin/DeactivatedUsers";
 import AllCategories from "./pages/admin/AllCategories";
-import AddNewCategories from "./pages/admin/AddNewCategories";
+import AddNewCategories from "./pages/admin/AddNewCategory";
+import AllSubcategories from "./pages/admin/AllSubcategories";
+import AddNewSubcategory from "./pages/admin/AddNewSubcategory";
 import NotFound from "./pages/NotFound";
 
 
@@ -63,6 +65,10 @@ const App = () => (
             <Route path="/admin/users/deactivated" element={<ProtectedRoute><DeactivatedUsers /></ProtectedRoute>} />
             <Route path="/admin/categories" element={<ProtectedRoute><AllCategories /></ProtectedRoute>} />
             <Route path="/admin/categories/add" element={<ProtectedRoute><AddNewCategories /></ProtectedRoute>} />
+            <Route path="/admin/subcategories" element={<ProtectedRoute><AllSubcategories /></ProtectedRoute>} />
+            <Route path="/admin/subcategories/add" element={<ProtectedRoute><AddNewSubcategory /></ProtectedRoute>} />
+
+            {/* Membership Route */}
             
             {/* Logout Route */}
             <Route 
