@@ -12,12 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import AddNewAdvertisement from "./AddNewAdvertisement"; // Import AddNewAdvertisement
+import AddNewAdvertisement from "./AddNewAdvertisement";
 
 const AllAdvertisements = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
-  const [showAddForm, setShowAddForm] = useState(false); // State to control form visibility
+  const [showAddForm, setShowAddForm] = useState(false);
   const [advertisements, setAdvertisements] = useState([
     { id: 1, category: "Advertising", title: "hii", type: "listener", status: "Active", imageUrl: "/images/profile-icon.png" },
     { id: 2, category: "Advertising", title: "hii", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
@@ -45,7 +45,7 @@ const AllAdvertisements = () => {
 
   const handleAddAdvertisement = (newAdvertisement) => {
     setAdvertisements([...advertisements, newAdvertisement]);
-    setShowAddForm(false); // Hide the form after submission
+    setShowAddForm(false);
   };
 
   return (

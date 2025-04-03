@@ -57,6 +57,14 @@ export const Sidebar = () => {
       
       <nav className="p-2">
         <ul className="space-y-1">
+
+         
+           
+             
+            
+              
+           
+         
           <li>
             <Link 
               to="/admin/dashboard" 
