@@ -10,12 +10,12 @@ import { Link } from "react-router-dom";
 
 const subcategoriesData = [
   {
-    id: 18,
-    name: "Pharmacy, Chemists & Medical Supplies",
+    id: 1,
+    name: "aman , chaman",
     image: "",
-    category: "Doctors, Clinics & Hospitals",
+    category: "hii, hello",
     status: "active",
-    createDate: "05-03-2024"
+    createDate: "05-03-2025"
   }
 ];
 

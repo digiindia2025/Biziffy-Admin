@@ -27,7 +27,7 @@ import AllUsers from "./pages/admin/AllUsers";
 import DeactivatedUsers from "./pages/admin/DeactivatedUsers";
 import AllCategories from "./pages/admin/AllCategories";
 import AddNewCategories from "./pages/admin/AddNewCategory";
-import AllSubcategories from "./pages/admin/AllSubcategories";
+import AllSubcategories from "./pages/admin/AllSubCategories";
 import AddNewSubcategory from "./pages/admin/AddNewSubcategory";
 import NotFound from "./pages/NotFound";
 
