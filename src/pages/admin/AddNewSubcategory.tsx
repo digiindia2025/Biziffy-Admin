@@ -24,9 +24,9 @@ import {
 } from "@/components/ui/select";
 
 const categories = [
-  { id: 1, name: "Doctors, Clinics & Hospitals" },
-  { id: 2, name: "Restaurants & Cafés" },
-  { id: 3, name: "Hotels & Accommodation" }
+  { id: 1, name: "Aman,gourav" },
+  { id: 2, name: "hello, hii" },
+  { id: 3, name: "fruits,main" }
 ];
 
 interface FormValues {

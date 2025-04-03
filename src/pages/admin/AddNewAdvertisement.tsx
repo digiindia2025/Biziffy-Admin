@@ -3,9 +3,10 @@ import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const AddNewAdvertisement = () => {
+const AddNewAdvertisement = ({ onAddAdvertisement }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     type: "",
@@ -17,7 +18,9 @@ const AddNewAdvertisement = () => {
     image: null,
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -31,7 +34,19 @@ const AddNewAdvertisement = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    // Here you would typically send this data to an API
+
+    if (onAddAdvertisement) {
+      onAddAdvertisement({
+        ...formData,
+        id: Date.now(),
+        imageUrl: formData.image
+          ? URL.createObjectURL(formData.image)
+          : "/images/default-image.png",
+      });
+      navigate("/admin/advertisements");
+    } else {
+      console.error("onAddAdvertisement prop is not provided.");
+    }
   };
 
   return (
@@ -40,14 +55,14 @@ const AddNewAdvertisement = () => {
         <h1 className="text-2xl font-bold">Add New Advertisement</h1>
         <Link to="/admin/advertisements">
           <Button className="bg-blue-500 hover:bg-blue-600">
-            Add  Advertisements
+            All Advertisements
           </Button>
         </Link>
       </div>
-      
+
       <div className="bg-white rounded-md border shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6"> 
+          <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
@@ -59,10 +74,10 @@ const AddNewAdvertisement = () => {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
-              <select 
+              <select
                 id="type"
                 name="type"
                 className="w-full px-3 py-2 border rounded-md"
@@ -71,15 +86,19 @@ const AddNewAdvertisement = () => {
                 required
               >
                 <option value="">Select a Type</option>
-                <option value="Listing detail center">Listing detail center</option>
-                <option value="Listing detail Right">Listing detail Right</option>
+                <option value="Listing detail center">
+                  Listing detail center
+                </option>
+                <option value="Listing detail Right">
+                  Listing detail Right
+                </option>
                 <option value="Listing Bottom">Listing Bottom</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="businessCategory">Business Category *</Label>
-              <select 
+              <select
                 id="businessCategory"
                 name="businessCategory"
                 className="w-full px-3 py-2 border rounded-md"
@@ -88,15 +107,17 @@ const AddNewAdvertisement = () => {
                 required
               >
                 <option value="">Select Category</option>
-                <option value="Advertising & Marketing">Advertising & Marketing</option>
+                <option value="Advertising & Marketing">
+                  Advertising & Marketing
+                </option>
                 <option value="Gifting">Gifting</option>
                 <option value="Daily Home Needs">Daily Home Needs</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="subCategory">Sub Category</Label>
-              <select 
+              <select
                 id="subCategory"
                 name="subCategory"
                 className="w-full px-3 py-2 border rounded-md"
@@ -104,13 +125,15 @@ const AddNewAdvertisement = () => {
                 onChange={handleInputChange}
               >
                 <option value="">Select Sub Category</option>
-                <option value="Advertising & PR Agencies">Advertising & PR Agencies</option>
+                <option value="Advertising & PR Agencies">
+                  Advertising & PR Agencies
+                </option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="childCategory">Child Category</Label>
-              <select 
+              <select
                 id="childCategory"
                 name="childCategory"
                 className="w-full px-3 py-2 border rounded-md"
@@ -120,7 +143,7 @@ const AddNewAdvertisement = () => {
                 <option value="">Select Child Category</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="redirectUrl">Redirect URL</Label>
               <Input
@@ -132,10 +155,10 @@ const AddNewAdvertisement = () => {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
-              <select 
+              <select
                 id="status"
                 name="status"
                 className="w-full px-3 py-2 border rounded-md"
@@ -147,25 +170,27 @@ const AddNewAdvertisement = () => {
               </select>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label>Advertisement Image</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
               <div className="space-y-2">
-                <div className="flex justify-center"> 
+                <div className="flex justify-center">
                   <input
                     type="file"
                     id="imageUpload"
                     name="image"
                     accept="image/*"
                     onChange={handleImageChange}
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                   />
                   <Button
                     type="button"
                     variant="outline"
                     className="bg-gray-200 hover:bg-gray-300"
-                    onClick={() => document.getElementById('imageUpload')?.click()}
+                    onClick={() =>
+                      document.getElementById("imageUpload")?.click()
+                    }
                   >
                     Upload Image
                   </Button>
@@ -175,16 +200,13 @@ const AddNewAdvertisement = () => {
                 </p>
               </div>
             </div>
-          </div> 
-          
-          <Button 
-            type="submit" 
-            className="bg-blue-500 hover:bg-blue-600 px-6"
-          >
+          </div>
+
+          <Button type="submit" className="bg-blue-500 hover:bg-blue-600 px-6">
             Submit Advertise
           </Button>
-        </form> 
-      </div> 
+        </form>
+      </div>
     </AdminLayout>
   );
 };

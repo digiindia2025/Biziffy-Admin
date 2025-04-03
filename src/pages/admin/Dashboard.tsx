@@ -10,20 +10,20 @@ const Dashboard = () => {
   
   // Mock data for Recent Users
   const recentUsers = [
-    { id: 1, name: "aman", email: "aman@gmail.com",  phone: "9031359720", date: "26 March 2025" },
+    { id: 1,  name: "aman",  email: "aman@gmail.com",    phone: "9031359720", date: "26 March 2025" },
     { id: 2, name: "gourav", email: "gourav@gmail.com",  phone: "9319846114", date: "27 March 2025" },
     { id: 3, name: "vishnu", email: "vishnu@gmail.com",  phone: "9315949626", date: "28 March 2025" },
-    { id: 4, name: "nitin", email: "nitin.com", phone: "9355239436", date: "29 March 2025" },
-    { id: 5, name: "sanjay ji", email: "sanjay@gmail.com", phone: "8504069643", date: "30 March 2025" }
+    { id: 4, name: "nitin",  email: "nitin.com",         phone: "9355239436", date: "29 March 2025" },
+    { id: 5, name: "sanjay", email: "sanjay@gmail.com",  phone: "8504069643", date: "30 March 2025" }
   ];
   
   // Mock data for Recent Listings
   const recentListings = [
-    { id: 1, user: "Mukesh", email: "mukesh@gmail.com", phone: "7530979185", title: ".........", date: "23 march 2025" },
-    { id: 2, user: "aman", email: "er.dhiman17@gmail.com", phone: "7604667888", title: "...........", date: "24 march 2025" },
-    { id: 3, user: "nikunj", email: "dextrous7833@gmail.com", phone: "7530979185", title: ".......", date: "25 march 2025" },
-    { id: 4, user: "deepak", email: "dextrous7833@gmail.com", phone: "7530979185", title: ".....", date: "26 march 2025" },
-    { id: 5, user: "akash", email: "dextrous7833@gmail.com", phone: "7530979185", title: "......", date: "27 march 2025" }
+    { id: 1, user: "Mukesh", email: "mukesh@gmail.com", phone: "7530979185", title: "hii",   date: "23 march 2025" },
+    { id: 2, user: "aman",   email: "aman@gmail.com",   phone: "7604667888", title: "hello", date: "24 march 2025" },
+    { id: 3, user: "nikunj", email: "nikunj@gmail.com", phone: "7530979185", title: "hii",   date: "25 march 2025" },
+    { id: 4, user: "deepak", email: "deepak@gmail.com", phone: "7530979185", title: "hello", date: "26 march 2025" },
+    { id: 5, user: "akash",  email: "akash@gmail.com",  phone: "7530979185", title: "hii",   date: "27 march 2025" }
   ];
 
   return (
@@ -39,7 +39,7 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle className="text-xl">Recent Users</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="p-0"> 
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">

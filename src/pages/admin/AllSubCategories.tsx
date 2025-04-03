@@ -12,7 +12,7 @@ const subcategoriesData = [
   {
     id: 1,
     name: "aman , chaman",
-    image: "",
+    image: "/images/profile-icon.png",
     category: "hii, hello",
     status: "active",
     createDate: "05-03-2025"

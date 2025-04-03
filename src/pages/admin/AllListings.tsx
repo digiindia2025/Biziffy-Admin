@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -16,10 +15,69 @@ import {
 
 const AllListings = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAction, setSelectedAction] = useState("Bulk Action");
+  const [selectedListings, setSelectedListings] = useState([]);
   
   // Mock data for listings
   const listings = [
-    { id: 1, title: "ki hal hai", category: "khana pina", user: "Aman Tiwari", createdDate: "1 days ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
+    { id: 1, title: "digi india solution pvt Ltd", category: "Software Development", user: "Aman Tiwari", createdDate: "1 days ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
+    { id: 2, title: "Biziffy Costomer Engagement Pvt Ltd", category: "Engagement", user: "Gourav Panchal", createdDate: "2 days ago", publishedDate: "Not Published", status: "Reject", businessStatus: "Approved", trustStatus: "Approved" },
+    { id: 3, title: "Justdial Software Pvt Ltd", category: "Service", user: "Deepak Verma", createdDate: "3 days ago", publishedDate: "Published", status: "Approved", businessStatus: "NotApproved", trustStatus: "Not Approved" },
+  ];
+
+  const filteredListings = listings.filter(
+    (listing) =>
+      listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.createdDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.publishedDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.businessStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      listing.trustStatus.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleBulkAction = () => {
+    if (selectedAction === "Bulk Action") return;
+
+    if (selectedAction === "Delete") {
+      // Implement delete logic here using selectedListings
+      console.log("Deleting listings:", selectedListings);
+    } else if (selectedAction === "Approve") {
+      // Implement approve logic here using selectedListings
+      console.log("Approving listings:", selectedListings);
+    } else if (selectedAction === "Reject") {
+      // Implement reject logic here using selectedListings
+      console.log("Rejecting listings:", selectedListings);
+    }
+    // Clear selection after action
+    setSelectedListings([]);
+  };
+
+  const handleCheckboxChange = (id) => {
+    if (selectedListings.includes(id)) {
+      setSelectedListings(selectedListings.filter((item) => item !== id));
+    } else {
+      setSelectedListings([...selectedListings, id]);
+    }
+  };
+
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedListings(filteredListings.map((listing) => listing.id));
+    } else {
+      setSelectedListings([]);
+    }
+  };
+
+  const csvHeaders = [
+    { label: "ID", key: "id" },
+    { label: "Title", key: "title" },
+    { label: "Category", key: "category" },
+    { label: "User Name", key: "user" },
+    { label: "Created Date", key: "createdDate" },
+    { label: "Published Date", key: "publishedDate" },
+    { label: "Status", key: "status" },
   ];
 
   const getStatusBadge = (status: string) => {
@@ -59,14 +117,15 @@ const AllListings = () => {
         <div className="flex items-center gap-2">
           <select 
             className="px-4 py-2 border rounded-md"
-            defaultValue="Bulk Action"
+            value={selectedAction}
+            onChange={(e) => setSelectedAction(e.target.value)}
           >
             <option value="Bulk Action">Bulk Action</option>
             <option value="Delete">Delete</option>
             <option value="Approve">Approve</option>
             <option value="Reject">Reject</option>
           </select>
-          <Button className="bg-blue-500 hover:bg-blue-600">
+          <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleBulkAction}>
             Apply
           </Button>
         </div>
@@ -90,7 +149,12 @@ const AllListings = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[40px]">
-                <input type="checkbox" className="h-4 w-4" />
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
+                  onChange={handleSelectAll}
+                  checked={selectedListings.length === filteredListings.length && filteredListings.length > 0}
+                />
               </TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Title</TableHead>
@@ -103,10 +167,15 @@ const AllListings = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {listings.map((listing) => (
+            {filteredListings.map((listing) => (
               <TableRow key={listing.id}>
                 <TableCell>
-                  <input type="checkbox" className="h-4 w-4" />
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4"
+                    checked={selectedListings.includes(listing.id)}
+                    onChange={() => handleCheckboxChange(listing.id)}
+                  />
                 </TableCell>
                 <TableCell>{listing.id}</TableCell>
                 <TableCell>{listing.title}</TableCell>
