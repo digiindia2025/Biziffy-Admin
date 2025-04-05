@@ -4,96 +4,201 @@ import { Button } from "@/components/ui/button";
 import { Eye, ShoppingCart, HelpCircle, FolderTree, PackageOpen, MapPin, Image, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+
+const gradientClasses = [
+  "bg-gradient-to-tr from-blue-500 to-cyan-200",
+  "bg-gradient-to-tr from-green-400 to-emerald-300",
+  "bg-gradient-to-tr from-pink-500 to-rose-400",
+  "bg-gradient-to-tr from-purple-500 to-indigo-300",
+  "bg-gradient-to-tr from-yellow-500 to-orange-400",
+  "bg-gradient-to-tr from-teal-500 to-lime-500",
+  "bg-gradient-to-tr from-fuchsia-500 to-pink-500",
+  "bg-gradient-to-tr from-sky-500 to-blue-500",
+  "bg-gradient-to-tr from-red-500 to-orange-500",
+  "bg-gradient-to-tr from-zinc-500 to-gray-400",
+  "bg-gradient-to-tr from-amber-500 to-yellow-400",
+  "bg-gradient-to-tr from-violet-500 to-indigo-500",
+];
 
 const Dashboard = () => {
   const { user } = useAuth();
-  
-  // Dashboard cards data based on the image
+  const [dashboardData, setDashboardData] = useState({
+    listings: 0,
+    advertisements: 0,
+    users: 0,
+    categories: 0,
+    subcategories: 0,
+    childCategories: 0,
+    contacts: 0,
+    supports: 0,
+    enquiries: 0,
+    links: 0,
+    reviews: 0,
+    memberships: 0,
+  });
+
+  // Simulate fetching data for counts (replace with your actual API calls)
+  useEffect(() => {
+    // Example API calls (replace with your actual endpoints)
+    const fetchDashboardCounts = async () => {
+      try {
+        const listingsResponse = await fetch('/api/admin/listings/count');
+        const listingsData = await listingsResponse.json();
+        setDashboardData(prev => ({ ...prev, listings: listingsData.count }));
+
+        const advertiseResponse = await fetch('/api/admin/advertisements/count');
+        const advertiseData = await advertiseResponse.json();
+        setDashboardData(prev => ({ ...prev, advertisements: advertiseData.count }));
+
+        const usersResponse = await fetch('/api/admin/users/count');
+        const usersData = await usersResponse.json();
+        setDashboardData(prev => ({ ...prev, users: usersData.count }));
+
+        const categoriesResponse = await fetch('/api/admin/categories/count');
+        const categoriesData = await categoriesResponse.json();
+        setDashboardData(prev => ({ ...prev, categories: categoriesData.count }));
+
+        const subcategoriesResponse = await fetch('/api/admin/subcategories/count');
+        const subcategoriesData = await subcategoriesResponse.json();
+        setDashboardData(prev => ({ ...prev, subcategories: subcategoriesData.count }));
+
+        const childCategoriesResponse = await fetch('/api/admin/child-categories/count');
+        const childCategoriesData = await childCategoriesResponse.json();
+        setDashboardData(prev => ({ ...prev, childCategories: childCategoriesData.count }));
+
+        const contactsResponse = await fetch('/api/admin/contact-us/count');
+        const contactsData = await contactsResponse.json();
+        setDashboardData(prev => ({ ...prev, contacts: contactsData.count }));
+
+        const supportsResponse = await fetch('/api/admin/supports/count');
+        const supportsData = await supportsResponse.json();
+        setDashboardData(prev => ({ ...prev, supports: supportsData.count }));
+
+        const enquiriesResponse = await fetch('/api/admin/enquiries/count');
+        const enquiriesData = await enquiriesResponse.json();
+        setDashboardData(prev => ({ ...prev, enquiries: enquiriesData.count }));
+
+        const linksResponse = await fetch('/api/admin/links/count');
+        const linksData = await linksResponse.json();
+        setDashboardData(prev => ({ ...prev, links: linksData.count }));
+
+        const reviewsResponse = await fetch('/api/admin/reviews/count');
+        const reviewsData = await reviewsResponse.json();
+        setDashboardData(prev => ({ ...prev, reviews: reviewsData.count }));
+
+        const membershipsResponse = await fetch('/api/admin/memberships/count');
+        const membershipsData = await membershipsResponse.json();
+        setDashboardData(prev => ({ ...prev, memberships: membershipsData.count }));
+
+        // Add similar calls for other data as needed
+      } catch (error) {
+        console.error("Error fetching dashboard counts:", error);
+      }
+    };
+
+    fetchDashboardCounts();
+  }, []);
+
+  // Dashboard cards data
   const dashboardCards = [
     {
       title: "Listing Manage",
-      // icon: <ShoppingCart className="h-12 w-12 text-[#FF7F27]" />,
-      // data: 1;
-      // description: "Track and update customer Listing.",
-      linkText: "Listing Manage",
+      count: dashboardData.listings,
+      icon: <ShoppingCart className="h-6 w-6 text-[#3b82f6]" />,
+      description: "Manage and monitor advertisements.",
+
+      linkText: "View",
       linkTo: "/admin/listings"
     },
     {
       title: "Advertise Manage",
-      // icon: <HelpCircle className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "View and respond to customer inquiries efficiently.",
-      linkText: "View Inquiries",
-      linkTo: "/admin/enquiries"
+      count: dashboardData.advertisements,
+      icon: <Image className="h-6 w-6 text-[#10b981]" />, // Green
+      description: "Manage and monitor advertisements.",
+      linkText: "View",
+      linkTo: "/admin/advertisements" // Assuming a route for advertisements
     },
     {
       title: "User Manage",
-      // icon: <FolderTree className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "View, add, or edit product categories.",
-      linkText: "Manage Categories",
-      linkTo: "/admin/categories"
-    },
-    {
-      title: "Categories Manage",
-      // icon: <PackageOpen className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Manage product inventory and details.",
-      linkText: "Manage Products",
-      linkTo: "/admin/products"
-    },
-    {
-      title: "Subcategories Manage",
-      // icon: <Users className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Manage user accounts and permissions.",
-      linkText: "View Users",
+      count: dashboardData.users,
+      icon: <Users className="h-6 w-6 text-[#f59e0b]" />, // Yellow/Amber
+      description: "Manage user accounts and permissions.",
+      linkText: "View",
       linkTo: "/admin/users"
     },
     {
+      title: "Categories Manage",
+      count: dashboardData.categories,
+      icon: <FolderTree className="h-6 w-6 text-[#e11d48]" />, // Red
+      description: "View, add, or edit product categories.",
+      linkText: "View",
+      linkTo: "/admin/categories"
+    },
+    {
+      title: "Subcategories Manage",
+      count: dashboardData.subcategories,
+      icon: <PackageOpen className="h-6 w-6 text-[#8b5cf6]" />, // Purple
+      description: "Manage product subcategories.",
+      linkText: "View",
+      linkTo: "/admin/subcategories" // Assuming a route for subcategories
+    },
+    {
       title: "Child Categories Manage",
-      // icon: <MapPin className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "View, add, or edit delivery pincodes.",
-      linkText: "Manage  Child",
-      linkTo: "/admin/pincode"
+      count: dashboardData.childCategories,
+      icon: <FolderTree className="h-6 w-6 text-[#06b6d4]" />, // Cyan
+      description: "Manage product child categories.",
+      linkText: "View",
+      linkTo: "/admin/child-categories" // Assuming a route for child categories
     },
     {
       title: "All Contact Manage",
-      // icon: <Image className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Update banners displayed on the website.",
-      linkText: "Manage Banners",
+      count: dashboardData.contacts,
+      icon: <MapPin className="h-6 w-6 text-[#a855f7]" />, // Purple-500
+      description: "View and manage all contact inquiries.",
+      linkText: "View",
       linkTo: "/admin/contact-us"
     },
     {
       title: "Support",
-      // icon: <Image className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Update banners displayed on the website.",
-      linkText: "Manage Banners",
-      linkTo: "/admin/contact-us"
+      count: dashboardData.supports,
+      icon: <HelpCircle className="h-6 w-6 text-[#d97706]" />, // Orange-600
+      description: "Manage and respond to user support requests.",
+      linkText: "View",
+      linkTo: "/admin/support/department" // Assuming a route for support
     },
     {
       title: "Enquiries",
-      // icon: <Image className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Update banners displayed on the website.",
-      linkText: "Manage Banners",
-      linkTo: "/admin/contact-us"
+      count: dashboardData.enquiries,
+      icon: <Eye className="h-6 w-6 text-[#0ea5e9]" />, // Sky-500
+      description: "View and manage general enquiries.",
+      linkText: "View",
+      linkTo: "/admin/enquiries"
     },
     {
       title: "Links",
-      // icon: <Image className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Update banners displayed on the website.",
-      linkText: "Manage Banners",
-      linkTo: "/admin/contact-us"
+      count: dashboardData.links,
+      icon: <FolderTree className="h-6 w-6 text-[#6b7280]" />, // Gray-500
+      description: "Manage important links.",
+      linkText: "View",
+      linkTo: "/admin/links" // Assuming a route for links
     },
     {
       title: "Reviews",
-      // icon: <Image className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Update banners displayed on the website.",
-      linkText: "Manage Banners",
-      linkTo: "/admin/contact-us"
+      count: dashboardData.reviews,
+      icon: <ShoppingCart className="h-6 w-6 text-[#4ade80]" />, // Emerald-400
+      description: "Manage product and service reviews.",
+      linkText: "View",
+      linkTo: "/admin/reviews" // Assuming a route for reviews
     },
     {
       title: "User Membership",
-      // icon: <Image className="h-12 w-12 text-[#FF7F27]" />,
-      // description: "Update banners displayed on the website.",
-      linkText: "Manage Banners",
-      linkTo: "/admin/contact-us"
+      count: dashboardData.memberships,
+      icon: <Users className="h-6 w-6 text-[#f472b6]" />, // Pink-400
+      description: "Manage user memberships.",
+      linkText: "View",
+      linkTo: "/admin/membership" // Assuming a route for memberships
     }
   ];
 
@@ -101,129 +206,25 @@ const Dashboard = () => {
     <AdminLayout title="Admin Dashboard">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {dashboardCards.map((card, index) => (
-          <Card key={index} className="admin-card overflow-hidden">
-            <CardContent className="p-6 flex flex-col items-center text-center">
-              <div className="mb-4">
-                {card.icon}
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
-              <p className="text-gray-600 mb-4">{card.description}</p>
-              <Link to={card.linkTo} className="mt-auto">
-                <Button className="admin-btn-primary w-full">
-                  {card.linkText}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+         <Card
+         className={`admin-card overflow-hidden rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-200 text-white ${gradientClasses[index % gradientClasses.length]}`}
+>
+         <CardContent className="p-6 flex flex-col items-center text-center">
+           <div className="mb-4 flex items-center justify-center rounded-full bg-white bg-opacity-20 p-4">
+             {card.icon}
+           </div>
+           <span className="text-3xl font-bold mb-2">{card.count}</span>
+           <h3 className="text-lg font-semibold mb-1">{card.title}</h3>
+           <p className="text-sm opacity-90 mb-4">{card.description}</p>
+           <Link to={card.linkTo} className="mt-auto w-full">
+             <Button className="w-full bg-white text-black hover:bg-gray-200 transition duration-150 font-semibold">
+               {card.linkText}
+             </Button>
+           </Link>
+         </CardContent>
+       </Card>
+       
         ))}
-      </div>
-      
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        {/* Recent Users Section - Will keep as a reference */}
-        <Card className="admin-card">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Recent Users</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">ID</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">USER</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">CREATED ON</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {[
-                    { id: 1, name: "Aman", email: "aman@gmail.com", date: "26 jan 2025" },
-                    { id: 2, name: "Deepak", email: "deepak@gmail.com", date: "19 feb 2024" },
-                    { id: 3, name: "Mukesh", email: "mukesh@gmail.com", date: "10 march 2024" },
-                    { id: 4, name: "Akash", email: "akash@gmail.com", phone: "", date: "1 apr 2025" },
-                    { id: 5, name: "nitin", email: "nitin@gmail.com", phone: "", date: "18 march 2025" }
-                  ].map(user => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="py-3 px-4 text-sm text-blue-600">{user.id}</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center">
-                          <div className="h-10 w-10 rounded-full bg-gray-200 flex-shrink-0 mr-3"></div>
-                          <div>
-                            <p className="text-sm font-medium">{user.name}</p>
-                            <p className="text-xs text-gray-500">{user.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-500">{user.date}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-4 flex justify-center">
-              <Link to="/admin/users">
-                <Button variant="outline" size="sm" className="text-[#FF7F27] border-[#FF7F27] hover:bg-[#FF7F27] hover:text-white">
-                  View All Users
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Recent Orders Section */}
-        <Card className="admin-card">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-semibold mb-4">Recent Listing</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">ID</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">CUSTOMER</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">STATUS</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">DATE</th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">VIEW</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {[
-                    { id: 1, customer: "Aman ", status: "Reject", date: "2 april 2025" },
-                    { id: 2, customer: "Nitin", status: "Accept", date: "25 march 2025" },
-                    { id: 3, customer: "Gourav", status: "Reject", date: "24 feb 2025" },
-                    { id: 4, customer: "Vishnu", status: "Accept", date: "23 jan 2025" },
-                    { id: 5, customer: "Mukesh", status: "Reject", date: "22 jan 2025" }
-                  ].map(order => (
-                    <tr key={order.id} className="hover:bg-gray-50">
-                      <td className="py-3 px-4 text-sm text-blue-600">#{order.id}</td>
-                      <td className="py-3 px-4 text-sm">{order.customer}</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                          order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-purple-100 text-purple-800'
-                        }`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-500">{order.date}</td>
-                      <td className="py-3 px-4">
-                        <Button size="sm" variant="ghost" className="text-[#FF7F27] hover:bg-[#FF7F27]/10">
-                          <Eye className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-4 flex justify-center">
-              <Link to="/admin/listings">
-                <Button variant="outline" size="sm" className="text-[#FF7F27] border-[#FF7F27] hover:bg-[#FF7F27] hover:text-white">
-                  View All Orders
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </AdminLayout>
   );
