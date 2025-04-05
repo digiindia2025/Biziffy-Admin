@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, Pencil, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
-import { 
+import { CSVLink } from "react-csv";
+import {
   Table,
   TableBody,
   TableCell,
@@ -17,12 +18,16 @@ const AllListings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAction, setSelectedAction] = useState("Bulk Action");
   const [selectedListings, setSelectedListings] = useState([]);
-  
-  // Mock data for listings
+  const [currentPage, setCurrentPage] = useState(1);
+  const listingsPerPage = 4;
+
   const listings = [
     { id: 1, title: "digi india solution pvt Ltd", category: "Software Development", user: "Aman Tiwari", createdDate: "1 days ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
     { id: 2, title: "Biziffy Costomer Engagement Pvt Ltd", category: "Engagement", user: "Gourav Panchal", createdDate: "2 days ago", publishedDate: "Not Published", status: "Reject", businessStatus: "Approved", trustStatus: "Approved" },
     { id: 3, title: "Justdial Software Pvt Ltd", category: "Service", user: "Deepak Verma", createdDate: "3 days ago", publishedDate: "Published", status: "Approved", businessStatus: "NotApproved", trustStatus: "Not Approved" },
+    { id: 4, title: "InfoEdge Pvt Ltd", category: "Recruitment", user: "Ravi Singh", createdDate: "4 days ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Not Approved" },
+    { id: 5, title: "Zomato Ltd", category: "Food Delivery", user: "Kunal Sharma", createdDate: "5 days ago", publishedDate: "Not Published", status: "Approved", businessStatus: "Approved", trustStatus: "Approved" },
+    { id: 6, title: "Flipkart Online Services", category: "E-Commerce", user: "Maya Roy", createdDate: "6 days ago", publishedDate: "Published", status: "Reject", businessStatus: "Not Approved", trustStatus: "Not Approved" },
   ];
 
   const filteredListings = listings.filter(
@@ -37,20 +42,19 @@ const AllListings = () => {
       listing.trustStatus.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const indexOfLast = currentPage * listingsPerPage;
+  const indexOfFirst = indexOfLast - listingsPerPage;
+  const currentListings = filteredListings.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredListings.length / listingsPerPage);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
+
   const handleBulkAction = () => {
     if (selectedAction === "Bulk Action") return;
 
-    if (selectedAction === "Delete") {
-      // Implement delete logic here using selectedListings
-      console.log("Deleting listings:", selectedListings);
-    } else if (selectedAction === "Approve") {
-      // Implement approve logic here using selectedListings
-      console.log("Approving listings:", selectedListings);
-    } else if (selectedAction === "Reject") {
-      // Implement reject logic here using selectedListings
-      console.log("Rejecting listings:", selectedListings);
-    }
-    // Clear selection after action
+    console.log(`${selectedAction} listings:`, selectedListings);
     setSelectedListings([]);
   };
 
@@ -64,21 +68,11 @@ const AllListings = () => {
 
   const handleSelectAll = (event) => {
     if (event.target.checked) {
-      setSelectedListings(filteredListings.map((listing) => listing.id));
+      setSelectedListings(currentListings.map((listing) => listing.id));
     } else {
       setSelectedListings([]);
     }
   };
-
-  const csvHeaders = [
-    { label: "ID", key: "id" },
-    { label: "Title", key: "title" },
-    { label: "Category", key: "category" },
-    { label: "User Name", key: "user" },
-    { label: "Created Date", key: "createdDate" },
-    { label: "Published Date", key: "publishedDate" },
-    { label: "Status", key: "status" },
-  ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -92,19 +86,13 @@ const AllListings = () => {
   };
 
   const getBusinessTrustStatus = (status: string) => {
-    if (status === "Approved") {
-      return <span className="px-2 py-1 text-xs bg-blue-600 text-white rounded-md">{status} Business Status</span>;
-    } else {
-      return <span className="px-2 py-1 text-xs bg-red-600 text-white rounded-md">{status} Business Status</span>;
-    }
+    const color = status === "Approved" ? "bg-blue-600" : "bg-red-600";
+    return <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>{status} Business Status</span>;
   };
 
   const getTrustStatus = (status: string) => {
-    if (status === "Approved") {
-      return <span className="px-2 py-1 text-xs bg-green-600 text-white rounded-md">{status} Trust Status</span>;
-    } else {
-      return <span className="px-2 py-1 text-xs bg-yellow-600 text-white rounded-md">{status} Trust Status</span>;
-    }
+    const color = status === "Approved" ? "bg-green-600" : "bg-yellow-600";
+    return <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>{status} Trust Status</span>;
   };
 
   return (
@@ -112,10 +100,10 @@ const AllListings = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All User Listings</h1>
       </div>
-      
+
       <div className="flex justify-between mb-4">
         <div className="flex items-center gap-2">
-          <select 
+          <select
             className="px-4 py-2 border rounded-md"
             value={selectedAction}
             onChange={(e) => setSelectedAction(e.target.value)}
@@ -129,7 +117,7 @@ const AllListings = () => {
             Apply
           </Button>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Input
             type="text"
@@ -138,12 +126,16 @@ const AllListings = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <Button className="bg-blue-500 hover:bg-blue-600">
+          <CSVLink
+            data={filteredListings}
+            filename="listings.csv"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+          >
             Export to CSV
-          </Button>
+          </CSVLink>
         </div>
       </div>
-      
+
       <div className="bg-white rounded-md border shadow-sm">
         <Table>
           <TableHeader>
@@ -153,7 +145,10 @@ const AllListings = () => {
                   type="checkbox"
                   className="h-4 w-4"
                   onChange={handleSelectAll}
-                  checked={selectedListings.length === filteredListings.length && filteredListings.length > 0}
+                  checked={
+                    currentListings.length > 0 &&
+                    selectedListings.length === currentListings.length
+                  }
                 />
               </TableHead>
               <TableHead>ID</TableHead>
@@ -167,7 +162,7 @@ const AllListings = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredListings.map((listing) => (
+            {currentListings.map((listing) => (
               <TableRow key={listing.id}>
                 <TableCell>
                   <input
@@ -224,6 +219,34 @@ const AllListings = () => {
             ))}
           </TableBody>
         </Table>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-6 space-x-2">
+          <Button
+            size="sm"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          {[...Array(totalPages)].map((_, i) => (
+            <Button
+              key={i}
+              size="sm"
+              variant={currentPage === i + 1 ? "default" : "outline"}
+              onClick={() => handlePageChange(i + 1)}
+            >
+              {i + 1}
+            </Button>
+          ))}
+          <Button
+            size="sm"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </AdminLayout>
   );
