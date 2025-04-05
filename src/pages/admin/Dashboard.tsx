@@ -6,20 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const gradientClasses = [
-  "bg-gradient-to-tr from-blue-500 to-cyan-200",
-  "bg-gradient-to-tr from-green-400 to-emerald-300",
-  "bg-gradient-to-tr from-pink-500 to-rose-400",
-  "bg-gradient-to-tr from-purple-500 to-indigo-300",
-  "bg-gradient-to-tr from-yellow-500 to-orange-400",
-  "bg-gradient-to-tr from-teal-500 to-lime-500",
-  "bg-gradient-to-tr from-fuchsia-500 to-pink-500",
-  "bg-gradient-to-tr from-sky-500 to-blue-500",
-  "bg-gradient-to-tr from-red-500 to-orange-500",
-  "bg-gradient-to-tr from-zinc-500 to-gray-400",
-  "bg-gradient-to-tr from-amber-500 to-yellow-400",
-  "bg-gradient-to-tr from-violet-500 to-indigo-500",
-];
+// Import your data arrays
+import gradientClasses from "../data/gradientClasses";
+import dashboardCardTemplates from "../data/dashboardCards";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -41,22 +30,25 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardCounts = async () => {
       try {
-        const responses = await Promise.all([
-          fetch("/api/admin/listings/count"),
-          fetch("/api/admin/advertisements/count"),
-          fetch("/api/admin/users/count"),
-          fetch("/api/admin/categories/count"),
-          fetch("/api/admin/subcategories/count"),
-          fetch("/api/admin/child-categories/count"),
-          fetch("/api/admin/contact-us/count"),
-          fetch("/api/admin/supports/count"),
-          fetch("/api/admin/enquiries/count"),
-          fetch("/api/admin/links/count"),
-          fetch("/api/admin/reviews/count"),
-          fetch("/api/admin/memberships/count"),
-        ]);
+        const endpoints = [
+          "listings",
+          "advertisements",
+          "users",
+          "categories",
+          "subcategories",
+          "child-categories",
+          "contact-us",
+          "supports",
+          "enquiries",
+          "links",
+          "reviews",
+          "memberships",
+        ];
 
-        const data = await Promise.all(responses.map((res) => res.json()));
+        const responses = await Promise.all(
+          endpoints.map((e) => fetch(`/api/admin/${e}/count`))
+        );
+        const data = await Promise.all(responses.map((r) => r.json()));
 
         setDashboardData({
           listings: data[0].count,
@@ -72,144 +64,20 @@ const Dashboard = () => {
           reviews: data[10].count,
           memberships: data[11].count,
         });
-      } catch (error) {
-        console.error("Error fetching dashboard counts:", error);
+      } catch (err) {
+        console.error("Error fetching dashboard counts:", err);
       }
     };
 
     fetchDashboardCounts();
   }, []);
 
-  const dashboardCards = [
-    {
-      title: "Listing Manage",
-      count: dashboardData.listings,
-      description: "Manage and monitor advertisements.",
-      linkText: "View",
-      linkTo: "/admin/listings",
-    },
-    {
-      title: "Advertise Manage",
-      count: dashboardData.advertisements,
-      description: "Manage and monitor advertisements.",
-      linkText: "View",
-      linkTo: "/admin/advertisements",
-    },
-    {
-      title: "User Manage",
-      count: dashboardData.users,
-      description: "Manage user accounts and permissions.",
-      linkText: "View",
-      linkTo: "/admin/users",
-    },
-    {
-      title: "Categories Manage",
-      count: dashboardData.categories,
-      description: "View, add, or edit product categories.",
-      linkText: "View",
-      linkTo: "/admin/categories",
-    },
-    {
-      title: "Subcat Manage",
-      count: dashboardData.subcategories,
-      description: "Manage product subcategories.",
-      linkText: "View",
-      linkTo: "/admin/subcategories",
-    },
-    {
-      title: "Child categ Manage",
-      count: dashboardData.childCategories,
-      description: "Manage product child categories.",
-      linkText: "View",
-      linkTo: "/admin/child-categories",
-    },
-    {
-      title: "All Contact Manage",
-      count: dashboardData.contacts,
-      description: "View and manage all contact inquiries.",
-      linkText: "View",
-      linkTo: "/admin/contact-us",
-    },
-    {
-      title: "Support",
-      count: dashboardData.supports,
-      description: "Manage and respond to user support requests.",
-      linkText: "View",
-      linkTo: "/admin/support/department",
-    },
-    {
-      title: "Enquiries",
-      count: dashboardData.enquiries,
-      description: "View and manage general enquiries.",
-      linkText: "View",
-      linkTo: "/admin/enquiries",
-    },
-    {
-      title: "Links",
-      count: dashboardData.links,
-      description: "Manage important links.",
-      linkText: "View",
-      linkTo: "/admin/links",
-    },
-    {
-      title: "Reviews",
-      count: dashboardData.reviews,
-      description: "Manage product and service reviews.",
-      linkText: "View",
-      linkTo: "/admin/reviews",
-    },
-    {
-      title: "User Membership",
-      count: dashboardData.memberships,
-      description: "Manage user memberships.",
-      linkText: "View",
-      linkTo: "/admin/membership",
-    },
-    {
-      title: "Reviews",
-      count: dashboardData.reviews,
-      description: "Manage product and service reviews.",
-      linkText: "View",
-      linkTo: "/admin/reviews",
-    },
-    {
-      title: "User Membership",
-      count: dashboardData.memberships,
-      description: "Manage user memberships.",
-      linkText: "View",
-      linkTo: "/admin/membership",
-    },
-    {
-      title: "Reviews",
-      count: dashboardData.reviews,
-      description: "Manage product and service reviews.",
-      linkText: "View",
-      linkTo: "/admin/reviews",
-    },
-    {
-      title: "User Membership",
-      count: dashboardData.memberships,
-      description: "Manage user memberships.",
-      linkText: "View",
-      linkTo: "/admin/membership",
-    },
-    {
-      title: "Reviews",
-      count: dashboardData.reviews,
-      description: "Manage product and service reviews.",
-      linkText: "View",
-      linkTo: "/admin/reviews",
-    },
-    {
-      title: "User Membership",
-      count: dashboardData.memberships,
-      description: "Manage user memberships.",
-      linkText: "View",
-      linkTo: "/admin/membership",
-    },
-
-
-  ];
+  // Merge template + dynamic count
+  const dashboardCards = dashboardCardTemplates.map((tpl) => ({
+    ...tpl,
+    count: dashboardData[tpl.key] || 0,
+    linkText: "View",
+  }));
 
   const cardsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
@@ -219,19 +87,23 @@ const Dashboard = () => {
     currentPage * cardsPerPage
   );
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   return (
     <AdminLayout title="Admin Dashboard">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {paginatedCards.map((card, index) => (
+        {paginatedCards.map((card, idx) => (
           <Card
-            key={index}
-            className={`admin-card overflow-hidden rounded-2xl shadow-xl hover:scale-[1.03] transition-transform duration-200 text-white ${gradientClasses[(index + (currentPage - 1) * cardsPerPage) % gradientClasses.length]} h-[210px]`}
+            key={idx}
+            className={`
+              admin-card overflow-hidden rounded-2xl shadow-xl 
+              hover:scale-[1.03] transition-transform duration-200 text-white 
+              ${gradientClasses[
+                (idx + (currentPage - 1) * cardsPerPage) %
+                  gradientClasses.length
+              ]} h-[210px]`}
           >
             <CardContent className="p-3 flex flex-col items-center text-center">
               <span className="text-2xl font-bold mb-1">{card.count}</span>
