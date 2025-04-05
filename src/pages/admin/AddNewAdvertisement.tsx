@@ -1,13 +1,32 @@
-import { useState } from "react";
+// AddNewAdvertisement.tsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const AddNewAdvertisement = ({ onAddAdvertisement }) => {
+// Define the shape of the advertisement data
+export interface AdvertisementData {
+  title: string;
+  type: string;
+  businessCategory: string;
+  subCategory: string;
+  childCategory: string;
+  redirectUrl: string;
+  status: "Active" | "Inactive";
+  image: File | null;
+}
+
+// Define the props for the component
+interface AddNewAdvertisementProps {
+  onAddAdvertisement: (ad: AdvertisementData & { id: number; imageUrl: string }) => void;
+}
+
+const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertisement }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AdvertisementData>({
     title: "",
     type: "",
     businessCategory: "",
@@ -22,27 +41,26 @@ const AddNewAdvertisement = ({ onAddAdvertisement }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, image: e.target.files[0] });
+      setFormData((prevData) => ({ ...prevData, image: e.target.files![0] }));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-
     if (onAddAdvertisement) {
-      onAddAdvertisement({
+      const newAd = {
         ...formData,
         id: Date.now(),
         imageUrl: formData.image
           ? URL.createObjectURL(formData.image)
           : "/images/default-image.png",
-      });
+      };
+      onAddAdvertisement(newAd);
       navigate("/admin/advertisements");
     } else {
       console.error("onAddAdvertisement prop is not provided.");
@@ -170,6 +188,7 @@ const AddNewAdvertisement = ({ onAddAdvertisement }) => {
               </select>
             </div>
           </div>
+
 
           <div className="space-y-2">
             <Label>Advertisement Image</Label>

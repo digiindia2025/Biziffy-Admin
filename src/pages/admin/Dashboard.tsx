@@ -207,7 +207,7 @@ const Dashboard = () => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {dashboardCards.map((card, index) => (
          <Card
-         className={`admin-card overflow-hidden rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-200 text-white ${gradientClasses[index % gradientClasses.length]}`}
+         className={`admin-card overflow-hidden rounded-2xl shadow-xl hover:scale-[1.03] transition-transform duration-200 text-white ${gradientClasses[index % gradientClasses.length]}`}
 >
          <CardContent className="p-6 flex flex-col items-center text-center">
            <div className="mb-4 flex items-center justify-center rounded-full bg-white bg-opacity-20 p-4">

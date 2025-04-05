@@ -1,3 +1,4 @@
+// AllAdvertisements.tsx
 import { useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -12,18 +13,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import AddNewAdvertisement from "./AddNewAdvertisement";
+import AddNewAdvertisement, { AdvertisementData as NewAdvertisementData } from "./AddNewAdvertisement";
+
+// Define the shape of the advertisement data used in this component
+interface Advertisement {
+  id: number;
+  category: string;
+  title: string;
+  type: string;
+  status: "Active" | "Inactive" | string;
+  imageUrl: string;
+}
 
 const AllAdvertisements = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [advertisements, setAdvertisements] = useState([
-    { id: 1, category: "Advertising", title: "hii", type: "listener", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 2, category: "Advertising", title: "hii", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 3, category: "Gifting", title: "test", type: "detail", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 4, category: "Gifting", title: "test", type: "detail", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 5, category: "Daily Home", title: "test", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
+  const [advertisements, setAdvertisements] = useState<Advertisement[]>([
+    { id: 1, category: "Advertising & Marketing", title: "Digi India Digital", type: "listener", status: "Active", imageUrl: "/images/profile-icon.png" },
+    { id: 2, category: "Advertising & Marketing", title: "Just Dial Adds", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
+    { id: 3, category: "Gifting", title: "bizziffy adds make", type: "detail", status: "Active", imageUrl: "/images/profile-icon.png" },
+    { id: 4, category: "Gifting", title: "ask me acookies adds", type: "detail", status: "Active", imageUrl: "/images/profile-icon.png" },
+    { id: 5, category: "Daily Home Needs", title: "think.aman addvertise", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
   ]);
 
   const filteredAdvertisements = advertisements.filter((ad) => {
@@ -43,8 +54,15 @@ const AllAdvertisements = () => {
     }
   };
 
-  const handleAddAdvertisement = (newAdvertisement) => {
-    setAdvertisements([...advertisements, newAdvertisement]);
+  const handleAddAdvertisement = (newAdvertisement: NewAdvertisementData & { id: number; imageUrl: string; category: string }) => {
+    setAdvertisements([...advertisements, {
+      id: newAdvertisement.id,
+      category: newAdvertisement.businessCategory, // Use businessCategory from the form
+      title: newAdvertisement.title,
+      type: newAdvertisement.type,
+      status: newAdvertisement.status,
+      imageUrl: newAdvertisement.imageUrl,
+    }]);
     setShowAddForm(false);
   };
 

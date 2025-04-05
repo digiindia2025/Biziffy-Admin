@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User, Lock, Eye, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -12,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { 
+import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -20,18 +19,53 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  status: "Active" | "Inactive" | "Deactivated";
+}
 
 const AllUsers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // Mock data for users
-  const users = [
+  const usersPerPage = 5;
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  // Mock data for users with correct type
+  const users: UserData[] = [
     { id: 1, name: "Aman Tiwari", email: "amantiwari@gmail.com", phone: "9031359720", status: "Active" },
-    
+    { id: 2, name: "Gourav", email: "gourav@gmail.com", phone: "9031359720", status: "Inactive" },
+    { id: 3, name: "Vishnu", email: "Vishnu@gmail.com", phone: "9031359720", status: "Active" },
+    { id: 4, name: "Nitin", email: "nitin@gmail.com", phone: "9031359720", status: "Inactive" },
+    { id: 5, name: "Anjali Sharma", email: "anjali.sharma@example.com", phone: "9876543210", status: "Active" },
+    { id: 6, name: "Rohan Verma", email: "rohan.verma@sample.org", phone: "8765432109", status: "Inactive" },
+    { id: 7, name: "Priya Gupta", email: "priya.gupta@work.net", phone: "7654321098", status: "Active" },
+    { id: 8, name: "Kunal Singh", email: "kunal.singh@home.in", phone: "6543210987", status: "Inactive" },
+    { id: 9, name: "Sneha Patel", email: "sneha.patel@email.co", phone: "5432109876", status: "Active" },
+    { id: 10, name: "Rajesh Yadav", email: "rajesh.yadav@data.com", phone: "4321098765", status: "Inactive" },
+    { id: 11, name: "Shweta Kumari", email: "shweta.kumari@info.biz", phone: "3210987654", status: "Active" },
+    { id: 12, name: "Vikram Mehra", email: "vikram.mehra@online.io", phone: "2109876543", status: "Inactive" },
   ];
 
-  const getStatusBadge = (status: string) => {
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.phone.includes(searchQuery)
+  );
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const getStatusBadge = (status: UserData["status"]) => {
     switch (status) {
       case "Active":
         return <span className="px-3 py-1 text-sm bg-green-100 text-green-800 rounded-full">Active</span>;
@@ -44,15 +78,21 @@ const AllUsers = () => {
     }
   };
 
+  const handleViewUserDetails = (userId: number) => {
+    // Navigate to a new route for user details, passing the userId as a parameter
+    navigate(`/admin/users/${userId}`);
+    // You will need to create a corresponding component and route for this URL
+  };
+
   return (
     <AdminLayout title="All Users">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All Users</h1>
       </div>
-      
+
       <div className="flex justify-between mb-4">
         <div className="flex items-center gap-2">
-          <select 
+          <select
             className="px-4 py-2 border rounded-md"
             defaultValue="Bulk Action"
           >
@@ -64,7 +104,7 @@ const AllUsers = () => {
             Apply
           </Button>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Input
             type="text"
@@ -74,11 +114,11 @@ const AllUsers = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Button className="bg-blue-500 hover:bg-blue-600">
-            Export to CSV 
+            Export to CSV
           </Button>
         </div>
       </div>
-      
+
       <div className="bg-white rounded-md border shadow-sm">
         <Table>
           <TableHeader>
@@ -95,7 +135,7 @@ const AllUsers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>
                   <input type="checkbox" className="h-4 w-4" />
@@ -107,7 +147,7 @@ const AllUsers = () => {
                     {user.email}
                     <span className="ml-2 inline-block rounded-full bg-green-100 p-1">
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM11.3584 6.64L7.76 10.24C7.66292 10.3368 7.53238 10.3915 7.39599 10.3915C7.25959 10.3915 7.12905 10.3368 7.03197 10.24L4.64001 7.85C4.55628 7.75371 4.51375 7.6272 4.52122 7.49947C4.52869 7.37175 4.58555 7.25115 4.67871 7.16511C4.77187 7.07907 4.89647 7.03272 5.02481 7.03632C5.15316 7.03992 5.27465 7.09315 5.36362 7.18401L7.4 9.22L10.6384 5.96C10.728 5.87146 10.8486 5.82006 10.9755 5.81747C11.1024 5.81487 11.225 5.86128 11.3181 5.94551C11.4112 6.02975 11.4685 6.14574 11.4797 6.27224C11.4909 6.39874 11.4551 6.52532 11.3784 6.62667L11.3584 6.64Z" fill="#22C55E"/>
+                        <path d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM11.3584 6.64L7.76 10.24C7.66292 10.3368 7.53238 10.3915 7.39599 10.3915C7.25959 10.3915 7.12905 10.3368 7.03197 10.24L4.64001 7.85C4.55628 7.75371 4.51375 7.6272 4.52122 7.49947C4.52869 7.37175 4.58555 7.25115 4.67871 7.16511C4.77187 7.07907 4.89647 7.03272 5.02481 7.03632C5.15316 7.03992 5.27465 7.09315 5.36362 7.18401L7.4 9.22L10.6384 5.96C10.728 5.87146 10.8486 5.82006 10.9755 5.81747C11.1024 5.81487 11.225 5.86128 11.3181 5.94551C11.4112 6.02975 11.4685 6.14574 11.4797 6.27224C11.4909 6.39874 11.4551 6.52532 11.3784 6.62667L11.3584 6.64Z" fill="#22C55E" />
                       </svg>
                     </span>
                   </div>
@@ -118,7 +158,12 @@ const AllUsers = () => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Button size="sm" variant="default" className="bg-blue-500 hover:bg-blue-600">
+                    <Button
+                      size="sm"
+                      variant="default"
+                      className="bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                      onClick={() => handleViewUserDetails(user.id)}
+                    >
                       <Eye className="h-4 w-4" />
                       User Details
                     </Button>
@@ -134,24 +179,27 @@ const AllUsers = () => {
             ))}
           </TableBody>
         </Table>
-        
-        <div className="py-4">
+
+        <div className="py-4 flex justify-end">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious href="#" />
+                <PaginationPrevious href="#" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} />
               </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .slice(
+                  Math.max(0, currentPage - 2),
+                  Math.min(totalPages, currentPage + 1)
+                )
+                .map((pageNumber) => (
+                  <PaginationItem key={pageNumber} isActive={pageNumber === currentPage}>
+                    <PaginationLink href="#" onClick={() => paginate(pageNumber)}>
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
               <PaginationItem>
-                <PaginationLink href="#" isActive>1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
+                <PaginationNext href="#" onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} />
               </PaginationItem>
             </PaginationContent>
           </Pagination>
