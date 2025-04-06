@@ -3,6 +3,7 @@ import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User, Lock, Eye, Trash2 } from "lucide-react";
+import AllUserData from "../data/AllUserData"
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ const AllUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
   const navigate = useNavigate();
+  
 
   const users: UserData[] = [
     { id: 1, name: "Aman Tiwari", email: "aman@gmail.com", phone: "9031359720", status: "Active" },

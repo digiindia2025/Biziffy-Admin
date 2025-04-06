@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Pencil, Trash } from "lucide-react";
+// Inside AllAdvertisements.tsx
+
+import { initialAdvertisements, Advertisement } from "../data/advertisementData";
+
 import {
   Table,
   TableBody,

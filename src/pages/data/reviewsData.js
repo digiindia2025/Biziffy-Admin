@@ -1,0 +1,48 @@
+export const reviewsData = [
+    {
+      id: 1,
+      userName: "amantiwari2357",
+      title: "",
+      email: "amankumartiwari5255@gmail.com",
+      rating: 5.0,
+      content: "00001",
+      date: "2025-03-31 11:28:18",
+    },
+    {
+      id: 2,
+      userName: "user2",
+      title: "Review 2",
+      email: "user2@example.com",
+      rating: 4.2,
+      content: "Content 2",
+      date: "2025-04-01 09:00:00",
+    },
+    {
+      id: 3,
+      userName: "user3",
+      title: "Review 3",
+      email: "user3@example.com",
+      rating: 3.5,
+      content: "Content 3",
+      date: "2025-04-02 10:30:00",
+    },
+    {
+      id: 4,
+      userName: "user4",
+      title: "Review 4",
+      email: "user4@example.com",
+      rating: 2.9,
+      content: "Content 4",
+      date: "2025-04-03 14:10:00",
+    },
+    {
+      id: 5,
+      userName: "user5",
+      title: "Review 5",
+      email: "user5@example.com",
+      rating: 4.7,
+      content: "Content 5",
+      date: "2025-04-04 17:45:00",
+    },
+  ];
+  

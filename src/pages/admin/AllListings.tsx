@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Eye, Pencil, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CSVLink } from "react-csv";
+import listingsData from "../data/listingsData";
 import {
   Table,
   TableBody,
@@ -19,16 +20,9 @@ const AllListings = () => {
   const [selectedAction, setSelectedAction] = useState("Bulk Action");
   const [selectedListings, setSelectedListings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const listingsPerPage = 4;
+  const listingsPerPage = 3;
 
-  const listings = [
-    { id: 1, title: "digi india solution pvt Ltd", category: "Software Development", user: "Aman Tiwari", createdDate: "1 days ago", publishedDate: "Published", status: "Approved", businessStatus: "Not Approved", trustStatus: "Not Approved" },
-    { id: 2, title: "Biziffy Costomer Engagement Pvt Ltd", category: "Engagement", user: "Gourav Panchal", createdDate: "2 days ago", publishedDate: "Not Published", status: "Reject", businessStatus: "Approved", trustStatus: "Approved" },
-    { id: 3, title: "Justdial Software Pvt Ltd", category: "Service", user: "Deepak Verma", createdDate: "3 days ago", publishedDate: "Published", status: "Approved", businessStatus: "NotApproved", trustStatus: "Not Approved" },
-    { id: 4, title: "InfoEdge Pvt Ltd", category: "Recruitment", user: "Ravi Singh", createdDate: "4 days ago", publishedDate: "Published", status: "Pending", businessStatus: "Approved", trustStatus: "Not Approved" },
-    { id: 5, title: "Zomato Ltd", category: "Food Delivery", user: "Kunal Sharma", createdDate: "5 days ago", publishedDate: "Not Published", status: "Approved", businessStatus: "Approved", trustStatus: "Approved" },
-    { id: 6, title: "Flipkart Online Services", category: "E-Commerce", user: "Maya Roy", createdDate: "6 days ago", publishedDate: "Published", status: "Reject", businessStatus: "Not Approved", trustStatus: "Not Approved" },
-  ];
+  const listings = listingsData;
 
   const filteredListings = listings.filter(
     (listing) =>
