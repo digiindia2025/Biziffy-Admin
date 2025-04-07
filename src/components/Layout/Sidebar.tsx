@@ -14,7 +14,8 @@ import {
   ChevronRight,
   LifeBuoy,
   LogOut,
-  Menu
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +65,7 @@ export const Sidebar = () => {
             className="text-gray-500 hover:text-red-500"
             onClick={() => setMobileOpen(false)}
           >
-            ✕
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -83,6 +84,7 @@ export const Sidebar = () => {
             className="w-full px-4 py-2 border rounded-md text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+
       {/* Nav links */}
       
       <nav className="p-2">
