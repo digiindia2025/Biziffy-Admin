@@ -40,12 +40,12 @@ const Login = () => {
           </div>
           <img src={`/images/profile-icon.png`}
         alt="Biziffy Logo"
-        className="mx-auto w-32 h-auto" />
+        className="mx-auto w-32 h-auto p-0" />
           {/* <p className="text-sm text-gray-500">LOCAL BUSINESS ADMIN PANEL</p> */}
         </div>
         
         <Card>
-          <CardHeader className="space-y-1">
+          <CardHeader className="space-y-1 p-5">
             <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
             <CardDescription className="text-center">
               Enter your credentials to access your account

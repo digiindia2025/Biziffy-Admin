@@ -107,7 +107,11 @@ const Dashboard = () => {
   };
 
   return (
-    <AdminLayout title="Admin Dashboard">
+    <AdminLayout title="">
+      {/* Only show on medium and larger screens */}
+<div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+<h1 className="text-2xl font-bold hidden md:block">Admin Dashboard</h1>
+  </div>  
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {paginatedCards.map((card, idx) => (
           <Card
