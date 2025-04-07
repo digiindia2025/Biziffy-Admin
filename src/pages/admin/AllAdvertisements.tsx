@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Pencil, Trash } from "lucide-react";
 // Inside AllAdvertisements.tsx
-
 import { initialAdvertisements, Advertisement } from "../data/advertisementData";
+
 
 import {
   Table,
@@ -31,16 +31,7 @@ const AllAdvertisements = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [advertisements, setAdvertisements] = useState<Advertisement[]>([
-    { id: 1, category: "Advertising & Marketing", title: "Digi India Digital", type: "listener", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 2, category: "Advertising & Marketing", title: "Just Dial Adds", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 3, category: "Gifting", title: "bizziffy adds make", type: "detail", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 4, category: "Gifting", title: "ask me acookies adds", type: "detail", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 5, category: "Daily Home Needs", title: "think.aman addvertise", type: "Listing", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 6, category: "Gifting", title: "Bizziffy deal promo", type: "detail", status: "Inactive", imageUrl: "/images/profile-icon.png" },
-    { id: 7, category: "Food", title: "Tasty Bites", type: "listener", status: "Active", imageUrl: "/images/profile-icon.png" },
-    { id: 8, category: "Services", title: "UrbanClap Home Fix", type: "Listing", status: "Inactive", imageUrl: "/images/profile-icon.png" },
-  ]);
+  const [advertisements, setAdvertisements] = useState<Advertisement[]>(initialAdvertisements);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
