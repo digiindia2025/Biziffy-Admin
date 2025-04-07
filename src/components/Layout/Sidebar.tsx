@@ -35,21 +35,23 @@ export const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile top bar */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b">
-        <img src="/images/profile-icon.png" alt="Logo" className="h-12" />
-        <button onClick={() => setMobileOpen(true)}>
-          <Menu className="h-6 w-6 text-gray-700" />
-        </button>
-      </div>
+     {/* Mobile Menu Button - always on top */}
+  <button
+    className="fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow lg:hidden"
+    onClick={() => setMobileOpen(true)}
+  >
+    <Menu className="h-6 w-6 text-gray-700" />
+  </button>
 
-      {/* Backdrop */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-30 z-40 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+
+     {/* Backdrop */}
+  {mobileOpen && (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-30 z-40 lg:hidden"
+      onClick={() => setMobileOpen(false)}
+    />
+  )}
+
 
       {/* Sidebar */}
       <div
