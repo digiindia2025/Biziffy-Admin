@@ -118,7 +118,7 @@ const Dashboard = () => {
     <AdminLayout title="">
       {/* Header - only shows on medium and larger screens */}
       <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
-        <h1 className="text-2xl font-bold hidden md:block">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold hidden md:block"></h1>
       </div>
 
       {/* Dashboard cards grid */}
