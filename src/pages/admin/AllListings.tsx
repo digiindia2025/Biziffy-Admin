@@ -89,14 +89,15 @@ const AllListings = () => {
   };
 
   return (
-    <AdminLayout title="">
+    <AdminLayout title="All User Listings">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All User Listings</h1>
       </div>
 
-      <div className="flex justify-between mb-4 flex-wrap gap-3">
-        {/* Bulk Action - visible from md and up */}
-        <div className="hidden md:flex items-center gap-2">
+      {/* Bulk + Search/Export - Responsive */}
+      <div className="flex flex-col md:flex-row md:justify-between mb-4 gap-4">
+        {/* Bulk Actions */}
+        <div className="flex items-center gap-2">
           <select
             className="px-4 py-2 border rounded-md"
             value={selectedAction}
@@ -112,12 +113,8 @@ const AllListings = () => {
           </Button>
         </div>
 
-        {/* Info message for small screens */}
-        <div className="block md:hidden text-sm text-gray-500">
-          Bulk actions available on larger screens
-        </div>
-
-        <div className="flex items-center gap-2">
+        {/* Search + Export */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <Input
             type="text"
             placeholder="Search"
@@ -128,7 +125,7 @@ const AllListings = () => {
           <CSVLink
             data={filteredListings}
             filename="listings.csv"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm text-center w-28 sm:w-auto"
           >
             Export to CSV
           </CSVLink>
