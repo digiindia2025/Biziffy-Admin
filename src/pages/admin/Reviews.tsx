@@ -11,54 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
-const reviewsData = [
-  {
-    id: 1,
-    userName: "amantiwari2357",
-    title: "",
-    email: "amankumartiwari5255@gmail.com",
-    rating: 5.0,
-    content: "00001",
-    date: "2025-03-31 11:28:18",
-  },
-  {
-    id: 2,
-    userName: "user2",
-    title: "Review 2",
-    email: "user2@example.com",
-    rating: 4.2,
-    content: "Content 2",
-    date: "2025-04-01 09:00:00",
-  },
-  {
-    id: 3,
-    userName: "user3",
-    title: "Review 3",
-    email: "user3@example.com",
-    rating: 3.5,
-    content: "Content 3",
-    date: "2025-04-02 10:30:00",
-  },
-  {
-    id: 4,
-    userName: "user4",
-    title: "Review 4",
-    email: "user4@example.com",
-    rating: 2.9,
-    content: "Content 4",
-    date: "2025-04-03 14:10:00",
-  },
-  {
-    id: 5,
-    userName: "user5",
-    title: "Review 5",
-    email: "user5@example.com",
-    rating: 4.7,
-    content: "Content 5",
-    date: "2025-04-04 17:45:00",
-  },
-];
+import { reviewsData } from "../data/reviewsData";
 
 const Reviews = () => {
   const { toast } = useToast();
@@ -70,6 +23,13 @@ const Reviews = () => {
     toast({
       title: "Review Approved",
       description: `Review #${id} has been approved.`,
+    });
+  };
+
+  const handleApproveAll = () => {
+    toast({
+      title: "All Reviews Approved",
+      description: "All reviews have been approved successfully.",
     });
   };
 
@@ -116,7 +76,7 @@ const Reviews = () => {
   };
 
   return (
-    <AdminLayout title="">
+    <AdminLayout title="All Reviews">
       <div className="mb-6 flex justify-between items-center">
         <Input
           placeholder="Search reviews..."
@@ -127,9 +87,14 @@ const Reviews = () => {
           }}
           className="w-64"
         />
-        <Button onClick={handleExportCSV} className="bg-green-500 hover:bg-green-600">
-          Export to CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleExportCSV} className="bg-green-500 hover:bg-green-600">
+            Export to CSV
+          </Button>
+          <Button onClick={handleApproveAll} className="bg-blue-600 hover:bg-blue-700">
+            Approve All Reviews
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-md border">
@@ -156,11 +121,11 @@ const Reviews = () => {
             ) : (
               currentReviews.map((review) => (
                 <tr key={review.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{review.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{review.userName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{review.title || "-"}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{review.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <td className="px-6 py-4 text-sm">{review.id}</td>
+                  <td className="px-6 py-4 text-sm">{review.userName}</td>
+                  <td className="px-6 py-4 text-sm">{review.title || "-"}</td>
+                  <td className="px-6 py-4 text-sm">{review.email}</td>
+                  <td className="px-6 py-4 text-sm">
                     <div className="flex items-center">
                       <span className={`font-medium ${
                         review.rating >= 4 ? "text-green-600" :
@@ -183,8 +148,8 @@ const Reviews = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm max-w-xs truncate">{review.content}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">{review.date}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <td className="px-6 py-4 text-sm">{review.date}</td>
+                  <td className="px-6 py-4 text-sm">
                     <Button
                       onClick={() => handleApprove(review.id)}
                       className="bg-green-600 text-white hover:bg-green-700"

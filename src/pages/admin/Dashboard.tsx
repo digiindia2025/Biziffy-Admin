@@ -12,7 +12,6 @@ import dashboardCardTemplates from "../data/dashboardCards";
 const Dashboard = () => {
   const { user } = useAuth();
 
-  // Initial empty state for dashboard data
   const [dashboardData, setDashboardData] = useState({
     listings: 0,
     advertisements: 0,
@@ -28,20 +27,18 @@ const Dashboard = () => {
     memberships: 0,
   });
 
-  // Detect mobile screen size
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // if screen width ≤ 768px, it's mobile
+      setIsMobile(window.innerWidth <= 768);
     };
 
-    handleResize(); // Run on first load
-    window.addEventListener("resize", handleResize); // Listen to resize changes
+    handleResize();
+    window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch counts for all dashboard sections
   useEffect(() => {
     const fetchDashboardCounts = async () => {
       try {
@@ -60,13 +57,11 @@ const Dashboard = () => {
           "memberships",
         ];
 
-        // Fetch all counts in parallel
         const responses = await Promise.all(
           endpoints.map((e) => fetch(`/api/admin/${e}/count`))
         );
         const data = await Promise.all(responses.map((r) => r.json()));
 
-        // Set the dashboard data
         setDashboardData({
           listings: data[0].count,
           advertisements: data[1].count,
@@ -89,65 +84,59 @@ const Dashboard = () => {
     fetchDashboardCounts();
   }, []);
 
-  // Combine static template data with dynamic counts
   const dashboardCards = dashboardCardTemplates.map((tpl) => ({
     ...tpl,
     count: dashboardData[tpl.key] || 0,
     linkText: "View",
   }));
 
-  // Set cards per page (mobile: 3, desktop: 15)
-  const cardsPerPage = isMobile ? 3 : 15;
-
+  const cardsPerPage = isMobile ? 3 : 12;
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Calculate total number of pages
   const totalPages = Math.ceil(dashboardCards.length / cardsPerPage);
 
-  // ✅ Updated: On mobile, show only the first 6 cards (2 rows of 3)
   const paginatedCards = isMobile
     ? dashboardCards.slice(0, 6)
-    : dashboardCards.slice((currentPage - 1) * cardsPerPage, currentPage * cardsPerPage);
+    : dashboardCards.slice(
+        (currentPage - 1) * cardsPerPage,
+        currentPage * cardsPerPage
+      );
 
-  // Handle page change
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   return (
     <AdminLayout title="">
-      {/* Header - only shows on medium and larger screens */}
       <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
         <h1 className="text-2xl font-bold hidden md:block"></h1>
       </div>
 
-      {/* Dashboard cards grid */}
-      <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {paginatedCards.map((card, idx) => (
           <Card
             key={idx}
             className={`
-              admin-card overflow-hidden rounded-2xl shadow-xl 
-              hover:scale-[1.03] transition-transform duration-200 text-white 
-              ${gradientClasses[
-                (idx + (currentPage - 1) * cardsPerPage) % gradientClasses.length
-              ]} h-[210px]`}
+              admin-card h-[210px] rounded-2xl shadow-lg overflow-hidden 
+              transform transition duration-300 hover:scale-105 
+              text-white ${gradientClasses[
+                (idx + (currentPage - 1) * cardsPerPage) %
+                  gradientClasses.length
+              ]}
+            `}
           >
-            <CardContent className="p-3 flex flex-col items-center text-center">
-              {/* Count */}
+            <CardContent className="p-4 flex flex-col items-center text-center h-full w-full">
               <span className="text-2xl font-bold mb-1">{card.count}</span>
 
-              {/* Title */}
-              <h3 className="text-base font-semibold mb-1">{card.title}</h3>
+              <h3 className="text-base font-semibold mb-1">
+                {card.title}
+              </h3>
 
-              {/* Description - only on medium and larger screens */}
-              <p className="text-sm opacity-90 mb-2">
+              <p className="text-sm opacity-90 mb-2 line-clamp-2 w-full">
                 {card.description}
               </p>
 
-              {/* View Button */}
               <Link to={card.linkTo} className="mt-auto w-full">
-                <Button className="w-full bg-white text-black hover:bg-gray-200 transition duration-150 font-semibold text-sm">
+                <Button className="w-full bg-white text-black hover:bg-gray-200 font-semibold text-sm transition duration-200">
                   {card.linkText}
                 </Button>
               </Link>
@@ -156,9 +145,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center mt-6 space-x-2">
-        {/* Previous Button */}
         <Button
           variant="outline"
           size="sm"
@@ -169,11 +156,9 @@ const Dashboard = () => {
           Previous
         </Button>
 
-        {/* Page number buttons (limited on mobile) */}
         {Array.from({ length: totalPages }, (_, i) => i + 1)
           .filter((page) => {
-            if (!isMobile) return true; // show all on desktop
-            // show only first, last, and adjacent pages on mobile
+            if (!isMobile) return true;
             return (
               page === 1 ||
               page === totalPages ||
@@ -191,7 +176,6 @@ const Dashboard = () => {
             </Button>
           ))}
 
-        {/* Next Button */}
         <Button
           variant="outline"
           size="sm"

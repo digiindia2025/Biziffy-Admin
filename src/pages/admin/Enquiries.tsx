@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import enquiriesData from "../data/enquiriesData"; // ✅ import from data
+
 import {
   Pagination,
   PaginationContent,
@@ -11,21 +13,27 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const enquiriesData = [
-  { id: 1, userName: "amantiwari2357", title: "Aman", name: "Tiwari", requirement: "jaldi me " },
-  { id: 2, userName: "amantiwari2357", title: "Aman", name: "Tiwari", requirement: "jaldi me " },
-  { id: 3, userName: "john123", title: "John", name: "Doe", requirement: "Urgent need" },
-  { id: 4, userName: "jane456", title: "Jane", name: "Smith", requirement: "Requirement A" },
-  { id: 5, userName: "alex789", title: "Alex", name: "Johnson", requirement: "Requirement B" },
-  { id: 6, userName: "sam007", title: "Sam", name: "Brown", requirement: "Something quick" },
-];
-
 const Enquiries = () => {
+  const [enquiries, setEnquiries] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const enquiriesPerPage = 4;
+  const enquiriesPerPage = 7;
 
-  const filteredEnquiries = enquiriesData.filter((enquiry) =>
+  // ✅ Use local mock data instead of fetching
+  useEffect(() => {
+    const loadEnquiries = async () => {
+      try {
+        await new Promise((res) => setTimeout(res, 300)); // optional mock delay
+        setEnquiries(enquiriesData);
+      } catch (error) {
+        console.error("Failed to load enquiries:", error);
+      }
+    };
+
+    loadEnquiries();
+  }, []);
+
+  const filteredEnquiries = enquiries.filter((enquiry) =>
     Object.values(enquiry).some((val) =>
       String(val).toLowerCase().includes(searchQuery.toLowerCase())
     )
@@ -68,7 +76,7 @@ const Enquiries = () => {
   };
 
   return (
-    <AdminLayout title="">
+    <AdminLayout title="All Enquiries">
       <div className="mb-4 flex justify-between items-center">
         <Input
           placeholder="Search enquiries..."
@@ -79,9 +87,23 @@ const Enquiries = () => {
           }}
           className="w-64"
         />
-        <Button className="bg-blue-500 hover:bg-blue-600" onClick={exportToCSV}>
-          Export to CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            className="bg-green-500 hover:bg-green-600"
+            onClick={() => {
+              setSearchQuery("");
+              setCurrentPage(1);
+            }}
+          >
+            All Enquiries
+          </Button>
+          <Button
+            className="bg-blue-500 hover:bg-blue-600"
+            onClick={exportToCSV}
+          >
+            Export to CSV
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-md border">
@@ -103,14 +125,14 @@ const Enquiries = () => {
                 </td>
               </tr>
             ) : (
-              currentEnquiries.map((enquiry) => (
+              currentEnquiries.map((enquiry, index) => (
                 <tr key={enquiry.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">{enquiry.id}</td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{indexOfFirst + index + 1}</td>
                   <td className="px-6 py-4 text-sm text-gray-900">{enquiry.userName || "-"}</td>
                   <td className="px-6 py-4 text-sm text-gray-900">{enquiry.title}</td>
                   <td className="px-6 py-4 text-sm text-gray-900">{enquiry.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    <div className="max-w-lg">{enquiry.requirement || enquiry.name}</div>
+                  <td className="px-6 py-4 text-sm text-gray-900 max-w-lg">
+                    {enquiry.requirement || enquiry.name}
                   </td>
                 </tr>
               ))

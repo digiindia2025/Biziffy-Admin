@@ -5,108 +5,18 @@ import { Input } from "@/components/ui/input";
 import { EditButton, DeleteButton } from "@/components/ui/table-actions";
 import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
-
-// Dummy data
-const childCategoriesData = [
-  {
-    id: 1,
-    childCategory: "Burger",
-    image: "/images/profile-icon.png",
-    subcategory: "Fast Food",
-    mainCategory: "Food",
-    status: "active",
-    createDate: "31-03-2025"
-  },
-  {
-    id: 2,
-    childCategory: "Laptop",
-    image: "/images/profile-icon.png",
-    subcategory: "Electronics",
-    mainCategory: "Gadgets",
-    status: "inactive",
-    createDate: "30-03-2025"
-  },
-  {
-    id: 3,
-    childCategory: "Shampoo",
-    image: "/images/profile-icon.png",
-    subcategory: "Hair Care",
-    mainCategory: "Beauty",
-    status: "active",
-    createDate: "29-03-2025"
-  },
-  {
-    id: 4,
-    childCategory: "T-shirt",
-    image: "/images/profile-icon.png",
-    subcategory: "Clothing",
-    mainCategory: "Fashion",
-    status: "active",
-    createDate: "28-03-2025"
-  },
-  {
-    id: 5,
-    childCategory: "Mobile Cover",
-    image: "/images/profile-icon.png",
-    subcategory: "Accessories",
-    mainCategory: "Mobile",
-    status: "inactive",
-    createDate: "27-03-2025"
-  },
-  {
-    id: 6,
-    childCategory: "Sofa Set",
-    image: "/images/profile-icon.png",
-    subcategory: "Living Room",
-    mainCategory: "Furniture",
-    status: "active",
-    createDate: "26-03-2025"
-  },
-  {
-    id: 7,
-    childCategory: "Action Figure",
-    image: "/images/profile-icon.png",
-    subcategory: "Toys",
-    mainCategory: "Kids",
-    status: "active",
-    createDate: "25-03-2025"
-  },
-  {
-    id: 8,
-    childCategory: "Sneakers",
-    image: "/images/profile-icon.png",
-    subcategory: "Footwear",
-    mainCategory: "Shoes",
-    status: "inactive",
-    createDate: "24-03-2025"
-  },
-  {
-    id: 9,
-    childCategory: "Headphones",
-    image: "/images/profile-icon.png",
-    subcategory: "Audio",
-    mainCategory: "Tech",
-    status: "active",
-    createDate: "23-03-2025"
-  },
-  {
-    id: 10,
-    childCategory: "Notebook",
-    image: "/images/profile-icon.png",
-    subcategory: "Stationery",
-    mainCategory: "Office",
-    status: "inactive",
-    createDate: "22-03-2025"
-  }
-];
+import { childCategoriesData, ChildCategoryData } from "../data/childCategoriesData";
 
 const ChildCategories = () => {
   const { toast } = useToast();
+
+  // ✅ Hooks must be inside the component
+  const [childCategories, setChildCategories] = useState<ChildCategoryData[]>(childCategoriesData);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const filteredData = childCategoriesData.filter((item) =>
+  const filteredData = childCategories.filter((item) =>
     item.childCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.subcategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.mainCategory.toLowerCase().includes(searchQuery.toLowerCase())
@@ -137,12 +47,10 @@ const ChildCategories = () => {
       item.createDate
     ]);
 
-    const csvContent =
-      [headers, ...rows].map((row) => row.join(",")).join("\n");
-
+    const csvContent = [headers, ...rows].map((row) => row.join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement("a");
     a.href = url;
     a.download = "child_categories.csv";
