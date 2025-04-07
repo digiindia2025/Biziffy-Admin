@@ -1,25 +1,26 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  ClipboardList, 
-  Users, 
-  MessageSquare, 
-  PanelLeft, 
-  Link as LinkIcon, 
-  Star, 
-  FolderTree, 
-  FolderPlus, 
-  ChevronDown, 
-  ChevronRight, 
+import {
+  LayoutDashboard,
+  ClipboardList,
+  Users,
+  MessageSquare,
+  PanelLeft,
+  Link as LinkIcon,
+  Star,
+  FolderTree,
+  FolderPlus,
+  ChevronDown,
+  ChevronRight,
   LifeBuoy,
-  LogOut
+  LogOut,
+  Menu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Sidebar = () => {
   const location = useLocation();
+
   const [openCategories, setOpenCategories] = useState(false);
   const [openSubcategories, setOpenSubcategories] = useState(false);
   const [openChildCategories, setOpenChildCategories] = useState(false);
@@ -27,43 +28,66 @@ export const Sidebar = () => {
   const [openUserManage, setOpenUserManage] = useState(false);
   const [openListingManage, setOpenListingManage] = useState(false);
   const [openAdvertisementsManage, setOpenAdvertisementsManage] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
-
   return (
-    <div className="w-64 bg-white border-r h-screen overflow-y-auto flex-shrink-0">
-      <div className="p-4 border-b">
-        <div className="flex items-center space-x-2">
-          <div className="flex">
-            
-          </div>
-          <div>
-            <img src="/images/profile-icon.png" alt="Logo" className="h-20 w-30" />
-            
+    <>
+      {/* Mobile top bar */}
+      <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b">
+        <img src="/images/profile-icon.png" alt="Logo" className="h-12" />
+        <button onClick={() => setMobileOpen(true)}>
+          <Menu className="h-6 w-6 text-gray-700" />
+        </button>
+      </div>
+
+      {/* Backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-30 z-40 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={cn(
+          "fixed top-0 left-0 z-50 h-full w-64 bg-white border-r overflow-y-auto transition-transform duration-300",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:translate-x-0 lg:static"
+        )}
+      >
+        {/* Mobile close button */}
+        <div className="lg:hidden flex justify-end p-2">
+          <button
+            className="text-gray-500 hover:text-red-500"
+            onClick={() => setMobileOpen(false)}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Logo */}
+        <div className="p-4 border-b">
+          <div className="flex items-center justify-center">
+            <img src="/images/profile-icon.png" alt="Logo" className="h-20" />
           </div>
         </div>
-      </div>
-      
-      <div className="p-4">
-        <div className="relative">
-          <input 
-            type="text" 
-            placeholder="Search here" 
+
+        {/* Search input */}
+        <div className="p-4">
+          <input
+            type="text"
+            placeholder="Search here"
             className="w-full px-4 py-2 border rounded-md text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-      </div>
+      {/* Nav links */}
       
       <nav className="p-2">
         <ul className="space-y-1">
 
-         
-           
-             
-            
-              
-           
          
           <li>
             <Link 
@@ -197,10 +221,6 @@ export const Sidebar = () => {
             )}
           </li>
 
-
-
-
-          
           <li>
             <button 
               onClick={() => setOpenCategories(!openCategories)}
@@ -450,5 +470,6 @@ export const Sidebar = () => {
         </ul>
       </nav>
     </div>
+    </>
   );
 };
