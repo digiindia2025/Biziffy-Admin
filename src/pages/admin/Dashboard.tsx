@@ -27,6 +27,19 @@ const Dashboard = () => {
     memberships: 0,
   });
 
+  // ✅ ADDED: Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize(); // Set initial
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     const fetchDashboardCounts = async () => {
       try {
@@ -79,7 +92,9 @@ const Dashboard = () => {
     linkText: "View",
   }));
 
-  const cardsPerPage = 15;
+  // ✅ MODIFIED: Dynamic cardsPerPage based on screen size
+  const cardsPerPage = isMobile ? 6 : 15;
+
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(dashboardCards.length / cardsPerPage);
   const paginatedCards = dashboardCards.slice(
@@ -131,16 +146,26 @@ const Dashboard = () => {
           Previous
         </Button>
 
-        {Array.from({ length: totalPages }, (_, i) => (
-          <Button
-            key={i}
-            size="sm"
-            variant={currentPage === i + 1 ? "default" : "outline"}
-            onClick={() => handlePageChange(i + 1)}
-          >
-            {i + 1}
-          </Button>
-        ))}
+        {/* ✅ MODIFIED: Show limited page numbers on mobile */}
+        {Array.from({ length: totalPages }, (_, i) => i + 1)
+          .filter((page) => {
+            if (!isMobile) return true;
+            return (
+              page === 1 ||
+              page === totalPages ||
+              Math.abs(page - currentPage) <= 1
+            );
+          })
+          .map((page) => (
+            <Button
+              key={page}
+              size="sm"
+              variant={currentPage === page ? "default" : "outline"}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </Button>
+          ))}
 
         <Button
           variant="outline"
