@@ -90,7 +90,7 @@ const Dashboard = () => {
     linkText: "View",
   }));
 
-  const cardsPerPage = isMobile ? 3 : 12;
+  const cardsPerPage = isMobile ? 3 : 24;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(dashboardCards.length / cardsPerPage);
 
@@ -115,28 +115,21 @@ const Dashboard = () => {
         {paginatedCards.map((card, idx) => (
           <Card
             key={idx}
-            className={`
-              admin-card h-[210px] rounded-2xl shadow-lg overflow-hidden 
+            className={`admin-card h-[180px] rounded-2xl shadow-lg overflow-hidden 
               transform transition duration-300 hover:scale-105 
               text-white ${gradientClasses[
-                (idx + (currentPage - 1) * cardsPerPage) %
-                  gradientClasses.length
+                (idx + (currentPage - 1) * cardsPerPage) % gradientClasses.length
               ]}
             `}
           >
-            <CardContent className="p-4 flex flex-col items-center text-center h-full w-full">
-              <span className="text-2xl font-bold mb-1">{card.count}</span>
+            <CardContent className="p-4 flex flex-col justify-between text-center h-full w-full">
+              <div>
+                <span className="text-2xl font-bold block">{card.count}</span>
+                <h3 className="text-base font-semibold mt-2 truncate">{card.title}</h3>
+              </div>
 
-              <h3 className="text-base font-semibold mb-1">
-                {card.title}
-              </h3>
-
-              <p className="text-sm opacity-90 mb-2 line-clamp-2 w-full">
-                {card.description}
-              </p>
-
-              <Link to={card.linkTo} className="mt-auto w-full">
-                <Button className="w-full bg-white text-black hover:bg-gray-200 font-semibold text-sm transition duration-200">
+              <Link to={card.linkTo} className="w-full">
+                <Button className="w-full bg-white text-black hover:bg-gray-200 font-semibold text-sm transition duration-200 mt-4">
                   {card.linkText}
                 </Button>
               </Link>
@@ -145,7 +138,6 @@ const Dashboard = () => {
         ))}
       </div>
 
-      
       <div className="flex justify-center mt-6 space-x-2">
         <Button
           variant="outline"

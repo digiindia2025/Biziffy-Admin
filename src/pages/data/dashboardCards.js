@@ -119,6 +119,30 @@ const dashboardCardTemplates = [
         description: "Manage product and service reviews.",
         linkTo: "/admin/reviews",
       },
+      {
+        key: "reviews",
+        title: "Reviews",
+        description: "Manage product and service reviews.",
+        linkTo: "/admin/reviews",
+      },
+      {
+        key: "memberships",
+        title: "User Membership",
+        description: "Manage user memberships.",
+        linkTo: "/admin/membership",
+      },
+      {
+        key: "links",
+        title: "Links",
+        description: "Manage important links.",
+        linkTo: "/admin/links",
+      },
+      {
+        key: "reviews",
+        title: "Reviews",
+        description: "Manage product and service reviews.",
+        linkTo: "/admin/reviews",
+      },
   ];
   
   export default dashboardCardTemplates;
