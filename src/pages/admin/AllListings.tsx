@@ -47,7 +47,6 @@ const AllListings = () => {
 
   const handleBulkAction = () => {
     if (selectedAction === "Bulk Action") return;
-
     console.log(`${selectedAction} listings:`, selectedListings);
     setSelectedListings([]);
   };
@@ -90,13 +89,14 @@ const AllListings = () => {
   };
 
   return (
-    <AdminLayout title="All User Listings">
+    <AdminLayout title="">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All User Listings</h1>
       </div>
 
-      <div className="flex justify-between mb-4">
-        <div className="flex items-center gap-2">
+      <div className="flex justify-between mb-4 flex-wrap gap-3">
+        {/* Bulk Action - visible from md and up */}
+        <div className="hidden md:flex items-center gap-2">
           <select
             className="px-4 py-2 border rounded-md"
             value={selectedAction}
@@ -112,11 +112,16 @@ const AllListings = () => {
           </Button>
         </div>
 
+        {/* Info message for small screens */}
+        <div className="block md:hidden text-sm text-gray-500">
+          Bulk actions available on larger screens
+        </div>
+
         <div className="flex items-center gap-2">
           <Input
             type="text"
             placeholder="Search"
-            className="w-64"
+            className="w-40 md:w-64"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
