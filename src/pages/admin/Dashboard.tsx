@@ -28,6 +28,7 @@ const Dashboard = () => {
   });
 
   const [isMobile, setIsMobile] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const handleResize = () => {
@@ -90,13 +91,17 @@ const Dashboard = () => {
     linkText: "View",
   }));
 
+  const filteredCards = dashboardCards.filter((card) =>
+    card.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const cardsPerPage = isMobile ? 6 : 24;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(dashboardCards.length / cardsPerPage);
+  const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
 
   const paginatedCards = isMobile
-    ? dashboardCards.slice(0, 9)
-    : dashboardCards.slice(
+    ? filteredCards.slice(0, 9)
+    : filteredCards.slice(
         (currentPage - 1) * cardsPerPage,
         currentPage * cardsPerPage
       );
@@ -105,8 +110,13 @@ const Dashboard = () => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // reset to first page when searching
+  };
+
   return (
-    <AdminLayout title="">
+    <AdminLayout title="" onSearch={handleSearch}>
       <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
         <h1 className="text-2xl font-bold hidden md:block"></h1>
       </div>

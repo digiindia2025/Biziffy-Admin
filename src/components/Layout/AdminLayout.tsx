@@ -15,14 +15,17 @@ import {
 type AdminLayoutProps = {
   children: React.ReactNode;
   title: string;
+  onSearch?: (value: string) => void; // added support for search callback
 };
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
   title,
+  onSearch,
 }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   const handleLogout = () => {
     logout();
@@ -31,6 +34,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
 
   const handleViewSite = () => {
     window.location.href = "https://classified.dextrous.co.in/";
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (onSearch) onSearch(value); // call search callback if provided
   };
 
   return (
@@ -47,6 +56,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 <Input
                   type="text"
                   placeholder="Search here"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                   className="pl-10 pr-4 py-2 border rounded-md"
                 />
                 <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -98,9 +109,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">{children}</main>
 
         <footer className="bg-white border-t py-3 px-4 text-center text-sm text-gray-500">
           <div className="flex justify-between items-center">
