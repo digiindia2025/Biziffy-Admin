@@ -93,7 +93,7 @@ const Dashboard = () => {
   }));
 
   // ✅ MODIFIED: Dynamic cardsPerPage based on screen size
-  const cardsPerPage = isMobile ? 6 : 15;
+  const cardsPerPage = isMobile ? 3 : 15;
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(dashboardCards.length / cardsPerPage);
