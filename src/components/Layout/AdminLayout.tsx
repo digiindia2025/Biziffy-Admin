@@ -43,7 +43,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
 
             <div className="flex items-center space-x-4">
               {/* Search - hidden on small screens */}
-              <div className="relative w-64 hidden md:block">
+              <div className="relative w-48 sm:w-64">
                 <Input
                   type="text"
                   placeholder="Search here"
