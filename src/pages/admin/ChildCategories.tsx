@@ -151,7 +151,7 @@ const ChildCategories = () => {
   };
 
   return (
-    <AdminLayout title="All Child Categories">
+    <AdminLayout title="">
       {/* Top Actions */}
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-2">

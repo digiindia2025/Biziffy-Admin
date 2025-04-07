@@ -159,7 +159,7 @@ const Membership = () => {
   };
 
   return (
-    <AdminLayout title="User Membership">
+    <AdminLayout title="">
       <div className="mb-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
         <div className="flex space-x-2">
           <Button variant={filterActive ? "default" : "outline"} onClick={() => { setFilterActive(true); setFilterInactive(false); setPage(1); }}>

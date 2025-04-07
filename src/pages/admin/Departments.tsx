@@ -78,7 +78,7 @@ const Departments = () => {
   const totalPages = Math.ceil(filteredDepartments.length / departmentsPerPage);
 
   return (
-    <AdminLayout title="All Departments">
+    <AdminLayout title="">
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <Button onClick={handleAddDepartment} className="bg-blue-500 hover:bg-blue-600">
           Add Department

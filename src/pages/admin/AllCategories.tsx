@@ -65,7 +65,7 @@ const AllCategories = () => {
   };
 
   return (
-    <AdminLayout title="All Categories">
+    <AdminLayout title="">
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-2">
           <select className="border rounded-md px-3 py-2 bg-white">

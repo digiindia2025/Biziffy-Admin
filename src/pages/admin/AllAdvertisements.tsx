@@ -102,7 +102,7 @@ const AllAdvertisements = () => {
   };
 
   return (
-    <AdminLayout title="All Advertisements">
+    <AdminLayout title="">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All Advertisements</h1>
       </div>

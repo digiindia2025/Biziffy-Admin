@@ -68,7 +68,7 @@ const Enquiries = () => {
   };
 
   return (
-    <AdminLayout title="All Enquiries">
+    <AdminLayout title="">
       <div className="mb-4 flex justify-between items-center">
         <Input
           placeholder="Search enquiries..."

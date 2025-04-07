@@ -89,7 +89,7 @@ const AllListings = () => {
   };
 
   return (
-    <AdminLayout title="All User Listings">
+    <AdminLayout title="">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All User Listings</h1>
       </div>

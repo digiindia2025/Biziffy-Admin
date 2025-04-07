@@ -91,7 +91,7 @@ const Links = () => {
   };
 
   return (
-    <AdminLayout title="All Links">
+    <AdminLayout title="">
       <div className="mb-6 flex justify-between items-center">
         <Input
           placeholder="Search links..."

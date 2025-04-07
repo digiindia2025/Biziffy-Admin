@@ -116,7 +116,7 @@ const Reviews = () => {
   };
 
   return (
-    <AdminLayout title="All Reviews">
+    <AdminLayout title="">
       <div className="mb-6 flex justify-between items-center">
         <Input
           placeholder="Search reviews..."

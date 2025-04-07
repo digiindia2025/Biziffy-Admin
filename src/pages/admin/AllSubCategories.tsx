@@ -55,7 +55,7 @@ const AllSubcategories = () => {
   const totalPages = Math.ceil(filteredSubcategories.length / subcategoriesPerPage);
 
   return (
-    <AdminLayout title="All Subcategories">
+    <AdminLayout title="">
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-2">
           <select className="border rounded-md px-3 py-2 bg-white">
