@@ -141,7 +141,7 @@ const Dashboard = () => {
               <h3 className="text-base font-semibold mb-1">{card.title}</h3>
 
               {/* Description - only on medium and larger screens */}
-              <p className="text-sm opacity-90 mb-2 hidden md:block">
+              <p className="text-sm opacity-90 mb-2">
                 {card.description}
               </p>
 
