@@ -53,33 +53,32 @@ export const Sidebar = () => {
   )}
 
 
-      {/* Sidebar */}
-      <div
-        className={cn(
-          "fixed top-0 left-0 z-50 h-full w-64 bg-white border-r overflow-y-auto transition-transform duration-300",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:translate-x-0 lg:static"
-        )}
+<div
+    className={cn(
+      "fixed top-0 left-0 z-50 h-full w-64 bg-white border-r overflow-y-auto transition-transform duration-300",
+      mobileOpen ? "translate-x-0" : "-translate-x-full",
+      "lg:translate-x-0 lg:static"
+    )}
+  >
+         {/* Close button for mobile */}
+    <div className="lg:hidden flex justify-end p-2">
+      <button
+        className="text-gray-500 hover:text-red-500"
+        onClick={() => setMobileOpen(false)}
       >
-        {/* Mobile close button */}
-        <div className="lg:hidden flex justify-end p-2">
-          <button
-            className="text-gray-500 hover:text-red-500"
-            onClick={() => setMobileOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+        <X className="h-5 w-5" />
+      </button>
+    </div>
 
         {/* Logo */}
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-center">
+        <div className="p-0 border-b">
+          <div className="flex  justify-center">
             <img src="/images/profile-icon.png" alt="Logo" className="h-20" />
           </div>
         </div>
 
         {/* Search input */}
-        <div className="p-4">
+        <div className="p-2">
           <input
             type="text"
             placeholder="Search here"
