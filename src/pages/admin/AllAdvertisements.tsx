@@ -142,9 +142,9 @@ const AllAdvertisements = () => {
               <option key={category} value={category}>{category}</option>
             ))}
           </select>
-          <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setShowAddForm(true)}>
-            Add Advertisement
-          </Button>
+          {/* <Button className="bg-blue-500 hover:bg-blue-600" onClick={() => setShowAddForm(true)}> */}
+            {/* Add Advertisement */}
+          {/* </Button> */}
           <Button className="bg-green-500 hover:bg-green-600" onClick={handleExportToCSV}>
             Export to CSV
           </Button>
