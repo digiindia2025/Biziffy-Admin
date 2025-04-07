@@ -90,12 +90,12 @@ const Dashboard = () => {
     linkText: "View",
   }));
 
-  const cardsPerPage = isMobile ? 3 : 24;
+  const cardsPerPage = isMobile ? 6 : 24;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(dashboardCards.length / cardsPerPage);
 
   const paginatedCards = isMobile
-    ? dashboardCards.slice(0, 6)
+    ? dashboardCards.slice(0, 9)
     : dashboardCards.slice(
         (currentPage - 1) * cardsPerPage,
         currentPage * cardsPerPage
