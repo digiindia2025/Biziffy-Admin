@@ -111,7 +111,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold hidden md:block"></h1>
       </div>
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {paginatedCards.map((card, idx) => (
           <Card
             key={idx}
@@ -145,6 +145,7 @@ const Dashboard = () => {
         ))}
       </div>
 
+      
       <div className="flex justify-center mt-6 space-x-2">
         <Button
           variant="outline"
