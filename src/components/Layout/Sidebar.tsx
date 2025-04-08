@@ -30,6 +30,7 @@ export const Sidebar = () => {
   const [openListingManage, setOpenListingManage] = useState(false);
   const [openAdvertisementsManage, setOpenAdvertisementsManage] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -83,6 +84,8 @@ export const Sidebar = () => {
             type="text"
             placeholder="Search here"
             className="w-full px-4 py-2 border rounded-md text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 

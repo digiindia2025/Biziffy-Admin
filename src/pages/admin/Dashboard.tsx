@@ -125,7 +125,7 @@ const Dashboard = () => {
         {paginatedCards.map((card, idx) => (
           <Card
             key={idx}
-            className={`admin-card h-[180px] md:h-[180px] h-[170px] rounded-2xl shadow-lg overflow-hidden 
+            className={`admin-card h-[180px] md:h-[180px] h-[170px] sm:w-[250px] md:w-[300px] lg:w-[180px] rounded-2xl shadow-lg overflow-hidden 
               transform transition duration-300 hover:scale-105 
               text-white ${gradientClasses[
                 (idx + (currentPage - 1) * cardsPerPage) % gradientClasses.length
