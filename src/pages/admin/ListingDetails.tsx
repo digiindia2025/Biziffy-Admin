@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 // Mock data for a listing - in a real app, this would come from an API
 const mockListingData = {
-  id: 176,
+  id: 1,
   businessName: "software development",
   category: "Software & Web Development",
   subCategory: "Software Development",
@@ -23,7 +23,7 @@ const mockListingData = {
   pin: "202357",
   state: "Uttar Pradesh",
   country: "India",
-  description: `aase our free Lorem Ipsum`,
+  description: `ammmmmmmmmmmmmmmmmmmmmmmmmm`,
   gstNo: "",
   cin: "N/A",
   entity: "Proprietorship",
