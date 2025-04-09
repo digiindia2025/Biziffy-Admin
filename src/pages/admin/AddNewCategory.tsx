@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -30,18 +30,17 @@ interface FormValues {
 
 const AddNewCategory = () => {
   const { toast } = useToast();
+  const navigate = useNavigate(); // ✅ For redirect
   const [iconPreview, setIconPreview] = useState<string | null>(null);
 
-  // Setup the form with default values
   const form = useForm<FormValues>({
     defaultValues: {
       name: "",
       icon: null,
       status: "active",
-    }
+    },
   });
 
-  // Show a preview of the uploaded icon
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -50,17 +49,16 @@ const AddNewCategory = () => {
         setIconPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      form.setValue("icon", e.target.files as FileList); // set in form state
+      form.setValue("icon", e.target.files as FileList);
     }
   };
 
-  // Submit form data to backend
   const onSubmit = async (data: FormValues) => {
-    const formData = new FormData(); // create multipart form data
+    const formData = new FormData();
     formData.append("name", data.name);
     formData.append("status", data.status);
     if (data.icon) {
-      formData.append("icon", data.icon[0]); // only the first file
+      formData.append("icon", data.icon[0]);
     }
 
     try {
@@ -68,6 +66,12 @@ const AddNewCategory = () => {
         method: "POST",
         body: formData,
       });
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const errorText = await response.text();
+        throw new Error("Unexpected response from server:\n" + errorText);
+      }
 
       const result = await response.json();
 
@@ -77,9 +81,11 @@ const AddNewCategory = () => {
           description: `Category "${result.category.name}" has been created successfully.`,
         });
 
-        // Optional: Reset form after successful submission
         form.reset();
         setIconPreview(null);
+
+        // ✅ Redirect to All Categories page
+        navigate("/admin/categories");
       } else {
         toast({
           title: "Error",
@@ -87,11 +93,11 @@ const AddNewCategory = () => {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Create category error:", error);
       toast({
         title: "Server Error",
-        description: "Unable to create category. Try again later.",
+        description: error.message || "Unable to create category. Try again later.",
         variant: "destructive",
       });
     }
@@ -112,9 +118,7 @@ const AddNewCategory = () => {
                   <FormControl>
                     <Input placeholder="Enter category name" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This name will be displayed to users.
-                  </FormDescription>
+                  <FormDescription>This name will be displayed to users.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -152,10 +156,7 @@ const AddNewCategory = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
@@ -176,11 +177,7 @@ const AddNewCategory = () => {
 
             {/* Action Buttons */}
             <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                asChild
-              >
+              <Button type="button" variant="outline" asChild>
                 <Link to="/admin/categories">Cancel</Link>
               </Button>
               <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
