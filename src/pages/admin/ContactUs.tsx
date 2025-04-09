@@ -1,16 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
-import { contactData, ContactData } from "../data/contactData";
+import axios from "axios";
+
+interface ContactData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  message: string;
+  state?: string;
+  city?: string;
+  services?: string;
+  createdAt: string;
+}
 
 const ContactUs = () => {
   const { toast } = useToast();
+  const [contactData, setContactData] = useState<ContactData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const contactsPerPage = 4;
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/admin/contacts");
+        setContactData(res.data);
+        setLoading(false);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load contacts from server.",
+          variant: "destructive",
+        });
+        setLoading(false);
+      }
+    };
+
+    fetchContacts();
+  }, []);
 
   const filteredContacts = contactData.filter((contact) =>
     Object.values(contact).some((value) =>
@@ -24,7 +57,9 @@ const ContactUs = () => {
   const totalPages = Math.ceil(filteredContacts.length / contactsPerPage);
 
   const handleExportToCSV = () => {
-    const csvHeader = Object.keys(contactData[0]).join(",") + "\n";
+    if (filteredContacts.length === 0) return;
+
+    const csvHeader = Object.keys(filteredContacts[0]).join(",") + "\n";
     const csvRows = filteredContacts
       .map((contact) =>
         Object.values(contact)
@@ -32,12 +67,14 @@ const ContactUs = () => {
           .join(",")
       )
       .join("\n");
+
     const blob = new Blob([csvHeader + csvRows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "contacts.csv";
     a.click();
+
     toast({ title: "Exported", description: "Contacts exported to CSV successfully!" });
   };
 
@@ -66,60 +103,66 @@ const ContactUs = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-md border">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              {["First Name", "Last Name", "Email", "Phone", "Message", "State", "City", "Services", "Created At"].map(
-                (heading) => (
-                  <th
-                    key={heading}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    {heading}
-                  </th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {currentContacts.map((contact, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.firstName}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.lastName}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.email}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.phone}</td>
-                <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{contact.message}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.state || "-"}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.city || "-"}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.services || "-"}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{contact.createdAt}</td>
-              </tr>
+      {loading ? (
+        <p className="text-center mt-10">Loading contacts...</p>
+      ) : (
+        <>
+          <div className="overflow-x-auto rounded-md border">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  {["First Name", "Last Name", "Email", "Phone", "Message", "State", "City", "Services", "Created At"].map(
+                    (heading) => (
+                      <th
+                        key={heading}
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        {heading}
+                      </th>
+                    )
+                  )}
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {currentContacts.map((contact, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.firstName}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.lastName}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.email}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.phone}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{contact.message}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.state || "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.city || "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{contact.services || "-"}</td>
+                    <td className="px-6 py-4 text-sm text-gray-900">{new Date(contact.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-center mt-6 flex-wrap gap-2">
+            <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>
+              Previous
+            </Button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                variant={page === currentPage ? "default" : "outline"}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </Button>
             ))}
-          </tbody>
-        </table>
-      </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-6 flex-wrap gap-2">
-        <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => prev - 1)}>
-          Previous
-        </Button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <Button
-            key={page}
-            variant={page === currentPage ? "default" : "outline"}
-            onClick={() => setCurrentPage(page)}
-          >
-            {page}
-          </Button>
-        ))}
-
-        <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>
-          Next
-        </Button>
-      </div>
+            <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>
+              Next
+            </Button>
+          </div>
+        </>
+      )}
     </AdminLayout>
   );
 };
