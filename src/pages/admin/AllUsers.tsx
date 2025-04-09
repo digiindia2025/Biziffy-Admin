@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { User, Lock, Eye, Trash2 } from "lucide-react";
-import { users as initialUsers, UserData } from "../data/userData";
+import { Eye, Lock, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -23,7 +22,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 interface UserData {
-  id: number;
+  _id: string;
   name: string;
   email: string;
   phone: string;
@@ -33,17 +32,32 @@ interface UserData {
 const AllUsers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [userList, setUserList] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const usersPerPage = 5;
   const navigate = useNavigate();
 
-  const [userList, setUserList] = useState<UserData[]>(initialUsers);
-  
-  const filteredUsers = userList.filter(user =>
+  useEffect(() => {
+    setLoading(true);
+    fetch("http://localhost:5000/api/admin/users")
+      .then((res) => res.json())
+      .then((data) => {
+        setUserList(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching users", err);
+        setError("Failed to load users.");
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredUsers = userList.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.phone.includes(searchQuery)
   );
-  
 
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
   const indexOfLastUser = currentPage * usersPerPage;
@@ -54,26 +68,34 @@ const AllUsers = () => {
 
   const getStatusBadge = (status: UserData["status"]) => {
     const badgeColor =
-      status === "Active" ? "green" :
-      status === "Inactive" ? "yellow" :
-      "red";
+      status === "Active"
+        ? "green"
+        : status === "Inactive"
+        ? "yellow"
+        : "red";
     return (
-      <span className={`px-3 py-1 text-sm bg-${badgeColor}-100 text-${badgeColor}-800 rounded-full`}>
+      <span
+        className={`px-3 py-1 text-sm bg-${badgeColor}-100 text-${badgeColor}-800 rounded-full`}
+      >
         {status}
       </span>
     );
   };
 
-  const handleViewUserDetails = (userId: number) => {
+  const handleViewUserDetails = (userId: string) => {
     navigate(`/admin/users/${userId}`);
   };
 
   const exportToCSV = () => {
     const headers = ["ID", "Name", "Email", "Phone", "Status"];
-    const rows = filteredUsers.map(u => [u.id, u.name, u.email, u.phone, u.status]);
-    const csvContent = [headers, ...rows]
-      .map(e => e.join(","))
-      .join("\n");
+    const rows = filteredUsers.map((u) => [
+      u._id,
+      u.name,
+      u.email,
+      u.phone,
+      u.status,
+    ]);
+    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
     const a = document.createElement("a");
@@ -131,75 +153,91 @@ const AllUsers = () => {
       </div>
 
       <div className="bg-white rounded-md border shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[40px]">
-                <input type="checkbox" className="h-4 w-4" />
-              </TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Account Status</TableHead>
-              <TableHead>Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell><input type="checkbox" className="h-4 w-4" /></TableCell>
-                <TableCell>{user.id}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phone}</TableCell>
-                <TableCell>{getStatusBadge(user.status)}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      className="bg-blue-500 hover:bg-blue-600"
-                      onClick={() => handleViewUserDetails(user.id)}
-                    >
-                      <Eye className="h-4 w-4 mr-1" />
-                      Details
-                    </Button>
-                    <Button size="sm" variant="outline"><Lock className="h-4 w-4" /></Button>
-                    <Button size="sm" variant="destructive"><Trash2 className="h-4 w-4" /></Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {loading ? (
+          <div className="p-4 text-center">Loading users...</div>
+        ) : error ? (
+          <div className="p-4 text-center text-red-500">{error}</div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[40px]">
+                    <input type="checkbox" className="h-4 w-4" />
+                  </TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Account Status</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentUsers.map((user) => (
+                  <TableRow key={user._id}>
+                    <TableCell>
+                      <input type="checkbox" className="h-4 w-4" />
+                    </TableCell>
+                    <TableCell>{user._id}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.phone}</TableCell>
+                    <TableCell>{getStatusBadge(user.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-blue-500 hover:bg-blue-600"
+                          onClick={() => handleViewUserDetails(user._id)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Details
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Lock className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
 
-        <div className="py-4 flex justify-end">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={() => paginate(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                />
-              </PaginationItem>
-              {renderPageNumbers().map((num) => (
-                <PaginationItem key={num} isActive={num === currentPage}>
-                  <PaginationLink href="#" onClick={() => paginate(num)}>
-                    {num}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-                  disabled={currentPage === totalPages}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+            <div className="py-4 flex justify-end">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      href="#"
+                      onClick={() => paginate(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                    />
+                  </PaginationItem>
+                  {renderPageNumbers().map((num) => (
+                    <PaginationItem key={num} isActive={num === currentPage}>
+                      <PaginationLink href="#" onClick={() => paginate(num)}>
+                        {num}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      href="#"
+                      onClick={() =>
+                        paginate(Math.min(totalPages, currentPage + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </>
+        )}
       </div>
     </AdminLayout>
   );
