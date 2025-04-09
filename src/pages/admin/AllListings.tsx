@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, Pencil, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CSVLink } from "react-csv";
-import listingsData from "../data/listingsData";
 import {
   Table,
   TableBody,
@@ -16,13 +16,25 @@ import {
 } from "@/components/ui/table";
 
 const AllListings = () => {
+  const [listings, setListings] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAction, setSelectedAction] = useState("Bulk Action");
   const [selectedListings, setSelectedListings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const listingsPerPage = 3;
 
-  const listings = listingsData;
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/admin/listings");
+        setListings(res.data);
+      } catch (error) {
+        console.error("Failed to fetch listings", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
 
   const filteredListings = listings.filter(
     (listing) =>
@@ -41,7 +53,7 @@ const AllListings = () => {
   const currentListings = filteredListings.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredListings.length / listingsPerPage);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
@@ -51,7 +63,7 @@ const AllListings = () => {
     setSelectedListings([]);
   };
 
-  const handleCheckboxChange = (id) => {
+  const handleCheckboxChange = (id: string) => {
     if (selectedListings.includes(id)) {
       setSelectedListings(selectedListings.filter((item) => item !== id));
     } else {
@@ -59,9 +71,9 @@ const AllListings = () => {
     }
   };
 
-  const handleSelectAll = (event) => {
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      setSelectedListings(currentListings.map((listing) => listing.id));
+      setSelectedListings(currentListings.map((listing) => listing._id));
     } else {
       setSelectedListings([]);
     }
@@ -94,9 +106,8 @@ const AllListings = () => {
         <h1 className="text-2xl font-bold">All User Listings</h1>
       </div>
 
-      {/* Bulk + Search/Export - Responsive */}
+      {/* Bulk Actions + Search/Export */}
       <div className="flex flex-col md:flex-row md:justify-between mb-4 gap-4">
-        {/* Bulk Actions */}
         <div className="flex items-center gap-2">
           <select
             className="px-4 py-2 border rounded-md"
@@ -113,7 +124,6 @@ const AllListings = () => {
           </Button>
         </div>
 
-        {/* Search + Export */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <Input
             type="text"
@@ -159,16 +169,16 @@ const AllListings = () => {
           </TableHeader>
           <TableBody>
             {currentListings.map((listing) => (
-              <TableRow key={listing.id}>
+              <TableRow key={listing._id}>
                 <TableCell>
                   <input
                     type="checkbox"
                     className="h-4 w-4"
-                    checked={selectedListings.includes(listing.id)}
-                    onChange={() => handleCheckboxChange(listing.id)}
+                    checked={selectedListings.includes(listing._id)}
+                    onChange={() => handleCheckboxChange(listing._id)}
                   />
                 </TableCell>
-                <TableCell>{listing.id}</TableCell>
+                <TableCell>{listing._id}</TableCell>
                 <TableCell>{listing.title}</TableCell>
                 <TableCell>{listing.category}</TableCell>
                 <TableCell>{listing.user}</TableCell>
@@ -194,7 +204,7 @@ const AllListings = () => {
                 <TableCell>
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-2">
-                      <Link to={`/admin/listings/details/${listing.id}`}>
+                      <Link to={`/admin/listings/details/${listing._id}`}>
                         <Button size="sm" variant="default" className="bg-blue-500 hover:bg-blue-600 text-white">
                           <Eye className="h-4 w-4 mr-1" />
                           View
@@ -218,11 +228,7 @@ const AllListings = () => {
 
         {/* Pagination Controls */}
         <div className="flex justify-center mt-6 space-x-2">
-          <Button
-            size="sm"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
+          <Button size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
             Previous
           </Button>
           {[...Array(totalPages)].map((_, i) => (
@@ -235,11 +241,7 @@ const AllListings = () => {
               {i + 1}
             </Button>
           ))}
-          <Button
-            size="sm"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
+          <Button size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
             Next
           </Button>
         </div>
