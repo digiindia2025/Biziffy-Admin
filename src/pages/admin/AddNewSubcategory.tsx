@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import axios from "axios"; // 👈 used for API request
+import { Link, useNavigate } from "react-router-dom"; // 👈 Added useNavigate
+import axios from "axios";
 
 import {
   Form,
@@ -40,6 +40,7 @@ interface FormValues {
 
 const AddNewSubcategory = () => {
   const { toast } = useToast();
+  const navigate = useNavigate(); // 👈 useNavigate hook
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
@@ -78,8 +79,11 @@ const AddNewSubcategory = () => {
         title: "Subcategory Created",
         description: `Subcategory "${data.name}" has been created successfully.`,
       });
-      form.reset(); // Clear form
-      setImagePreview(null); // Clear preview
+      form.reset();
+      setImagePreview(null);
+
+      // Redirect to All Subcategories page after successful submission
+      navigate("/admin/subcategories"); // 👈 Redirect here
     } catch (error) {
       console.error("Submission error:", error);
       toast({
@@ -95,7 +99,6 @@ const AddNewSubcategory = () => {
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Subcategory Name */}
             <FormField
               control={form.control}
               name="name"
@@ -111,7 +114,6 @@ const AddNewSubcategory = () => {
               )}
             />
 
-            {/* Image Upload */}
             <FormItem>
               <FormLabel>Subcategory Image</FormLabel>
               <div className="flex items-center gap-4">
@@ -136,7 +138,6 @@ const AddNewSubcategory = () => {
               </FormDescription>
             </FormItem>
 
-            {/* Category Select */}
             <FormField
               control={form.control}
               name="category"
@@ -163,7 +164,6 @@ const AddNewSubcategory = () => {
               )}
             />
 
-            {/* Status Select */}
             <FormField
               control={form.control}
               name="status"
@@ -187,7 +187,6 @@ const AddNewSubcategory = () => {
               )}
             />
 
-            {/* Actions */}
             <div className="flex justify-end space-x-2">
               <Button type="button" variant="outline" asChild>
                 <Link to="/admin/subcategories">Cancel</Link>
