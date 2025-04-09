@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import axios from "axios"; // 👈 used for API request
+
 import {
   Form,
   FormControl,
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Dummy category list
 const categories = [
   { id: 1, name: "Aman,gourav" },
   { id: 2, name: "hello, hii" },
@@ -39,7 +41,7 @@ interface FormValues {
 const AddNewSubcategory = () => {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  
+
   const form = useForm<FormValues>({
     defaultValues: {
       name: "",
@@ -48,7 +50,7 @@ const AddNewSubcategory = () => {
       status: "active",
     }
   });
-  
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -60,12 +62,32 @@ const AddNewSubcategory = () => {
       form.setValue("image", e.target.files as FileList);
     }
   };
-  
-  const onSubmit = (data: FormValues) => {
-    toast({
-      title: "Subcategory Created",
-      description: `Subcategory "${data.name}" has been created successfully.`,
-    });
+
+  const onSubmit = async (data: FormValues) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("category", data.category);
+    formData.append("status", data.status);
+    if (data.image && data.image[0]) {
+      formData.append("image", data.image[0]);
+    }
+
+    try {
+      await axios.post("http://localhost:5000/api/admin/subcategories/create", formData);
+      toast({
+        title: "Subcategory Created",
+        description: `Subcategory "${data.name}" has been created successfully.`,
+      });
+      form.reset(); // Clear form
+      setImagePreview(null); // Clear preview
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create subcategory.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -73,6 +95,7 @@ const AddNewSubcategory = () => {
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Subcategory Name */}
             <FormField
               control={form.control}
               name="name"
@@ -82,14 +105,13 @@ const AddNewSubcategory = () => {
                   <FormControl>
                     <Input placeholder="Enter subcategory name" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This name will be displayed to users.
-                  </FormDescription>
+                  <FormDescription>This name will be displayed to users.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
+            {/* Image Upload */}
             <FormItem>
               <FormLabel>Subcategory Image</FormLabel>
               <div className="flex items-center gap-4">
@@ -113,17 +135,15 @@ const AddNewSubcategory = () => {
                 Upload an image for this subcategory (recommended size: 200x200px).
               </FormDescription>
             </FormItem>
-            
+
+            {/* Category Select */}
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Main Category</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select main category" />
@@ -137,24 +157,20 @@ const AddNewSubcategory = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Select which main category this subcategory belongs to.
-                  </FormDescription>
+                  <FormDescription>Select which main category this subcategory belongs to.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
+            {/* Status Select */}
             <FormField
               control={form.control}
               name="status"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
@@ -165,20 +181,15 @@ const AddNewSubcategory = () => {
                       <SelectItem value="inactive">Inactive</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>
-                    Set whether this subcategory is active or inactive.
-                  </FormDescription>
+                  <FormDescription>Set whether this subcategory is active or inactive.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
+            {/* Actions */}
             <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                asChild
-              >
+              <Button type="button" variant="outline" asChild>
                 <Link to="/admin/subcategories">Cancel</Link>
               </Button>
               <Button type="submit" className="bg-blue-500 hover:bg-blue-600">

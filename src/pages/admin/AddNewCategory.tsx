@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -32,7 +31,8 @@ interface FormValues {
 const AddNewCategory = () => {
   const { toast } = useToast();
   const [iconPreview, setIconPreview] = useState<string | null>(null);
-  
+
+  // Setup the form with default values
   const form = useForm<FormValues>({
     defaultValues: {
       name: "",
@@ -40,7 +40,8 @@ const AddNewCategory = () => {
       status: "active",
     }
   });
-  
+
+  // Show a preview of the uploaded icon
   const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -49,15 +50,51 @@ const AddNewCategory = () => {
         setIconPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      form.setValue("icon", e.target.files as FileList);
+      form.setValue("icon", e.target.files as FileList); // set in form state
     }
   };
-  
-  const onSubmit = (data: FormValues) => {
-    toast({
-      title: "Category Created",
-      description: `Category "${data.name}" has been created successfully.`,
-    });
+
+  // Submit form data to backend
+  const onSubmit = async (data: FormValues) => {
+    const formData = new FormData(); // create multipart form data
+    formData.append("name", data.name);
+    formData.append("status", data.status);
+    if (data.icon) {
+      formData.append("icon", data.icon[0]); // only the first file
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/categories", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Category Created",
+          description: `Category "${result.category.name}" has been created successfully.`,
+        });
+
+        // Optional: Reset form after successful submission
+        form.reset();
+        setIconPreview(null);
+      } else {
+        toast({
+          title: "Error",
+          description: result.message || "Something went wrong.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Create category error:", error);
+      toast({
+        title: "Server Error",
+        description: "Unable to create category. Try again later.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -65,6 +102,7 @@ const AddNewCategory = () => {
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name Input */}
             <FormField
               control={form.control}
               name="name"
@@ -81,7 +119,8 @@ const AddNewCategory = () => {
                 </FormItem>
               )}
             />
-            
+
+            {/* Icon Upload */}
             <FormItem>
               <FormLabel>Category Icon</FormLabel>
               <div className="flex items-center gap-4">
@@ -105,7 +144,8 @@ const AddNewCategory = () => {
                 Upload an icon for this category (recommended size: 64x64px).
               </FormDescription>
             </FormItem>
-            
+
+            {/* Status Dropdown */}
             <FormField
               control={form.control}
               name="status"
@@ -133,7 +173,8 @@ const AddNewCategory = () => {
                 </FormItem>
               )}
             />
-            
+
+            {/* Action Buttons */}
             <div className="flex justify-end space-x-2">
               <Button
                 type="button"

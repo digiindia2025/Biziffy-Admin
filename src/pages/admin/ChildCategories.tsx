@@ -1,20 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EditButton, DeleteButton } from "@/components/ui/table-actions";
 import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
-import { childCategoriesData, ChildCategoryData } from "../data/childCategoriesData";
+import axios from "axios";
+
+interface ChildCategoryData {
+  id: number;
+  childCategory: string;
+  subcategory: string;
+  mainCategory: string;
+  status: string;
+  createDate: string;
+  image?: string;
+}
 
 const ChildCategories = () => {
   const { toast } = useToast();
-
-  // ✅ Hooks must be inside the component
-  const [childCategories, setChildCategories] = useState<ChildCategoryData[]>(childCategoriesData);
+  const [childCategories, setChildCategories] = useState<ChildCategoryData[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    const fetchChildCategories = async () => {
+      try {
+        const res = await axios.get("/api/admin/child-categories");
+        console.log("Fetched child categories:", res.data); // Check the shape of the response
+        if (Array.isArray(res.data)) {
+          setChildCategories(res.data); // Assuming the response is an array of categories
+        } else {
+          console.error("Unexpected data format:", res.data);
+          setChildCategories([]);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        toast({ title: "Error", description: "Failed to fetch child categories" });
+        setChildCategories([]);
+      }
+    };
+    
+    fetchChildCategories();
+  }, [toast]);
 
   const filteredData = childCategories.filter((item) =>
     item.childCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -59,7 +88,7 @@ const ChildCategories = () => {
   };
 
   return (
-    <AdminLayout title="">
+    <AdminLayout title="Child Categories">
       {/* Top Actions */}
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-2">

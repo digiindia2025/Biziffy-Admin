@@ -1,13 +1,12 @@
-// AddNewAdvertisement.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 
-// Define the shape of the advertisement data
 export interface AdvertisementData {
   title: string;
   type: string;
@@ -19,12 +18,7 @@ export interface AdvertisementData {
   image: File | null;
 }
 
-// Define the props for the component
-interface AddNewAdvertisementProps {
-  onAddAdvertisement: (ad: AdvertisementData & { id: number; imageUrl: string }) => void;
-}
-
-const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertisement }) => {
+const AddNewAdvertisement: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<AdvertisementData>({
     title: "",
@@ -50,22 +44,40 @@ const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertis
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onAddAdvertisement) {
-      const newAd = {
-        ...formData,
-        id: Date.now(),
-        imageUrl: formData.image
-          ? URL.createObjectURL(formData.image)
-          : "/images/default-image.png",
-      };
-      onAddAdvertisement(newAd);
-      navigate("/admin/advertisements");
-    } else {
-      console.error("onAddAdvertisement prop is not provided.");
+  
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const formPayload = new FormData();
+    formPayload.append("title", formData.title);
+    formPayload.append("type", formData.type);
+    formPayload.append("businessCategory", formData.businessCategory);
+    formPayload.append("subCategory", formData.subCategory);
+    formPayload.append("childCategory", formData.childCategory);
+    formPayload.append("redirectUrl", formData.redirectUrl);
+    formPayload.append("status", formData.status);
+    if (formData.image) {
+      formPayload.append("image", formData.image);
     }
-  };
+
+
+    await axios.post(
+      "http://localhost:5000/api/advertisements/upload", // ✅ FIXED route
+      formPayload,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    navigate("/admin/advertisements");
+  } catch (error) {
+    console.error("Error uploading advertisement:", error);
+    alert("Error uploading advertisement");
+  }
+};
 
   return (
     <AdminLayout title="Add New Advertisement">
@@ -104,12 +116,8 @@ const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertis
                 required
               >
                 <option value="">Select a Type</option>
-                <option value="Listing detail center">
-                  Listing detail center
-                </option>
-                <option value="Listing detail Right">
-                  Listing detail Right
-                </option>
+                <option value="Listing detail center">Listing detail center</option>
+                <option value="Listing detail Right">Listing detail Right</option>
                 <option value="Listing Bottom">Listing Bottom</option>
               </select>
             </div>
@@ -125,9 +133,7 @@ const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertis
                 required
               >
                 <option value="">Select Category</option>
-                <option value="Advertising & Marketing">
-                  Advertising & Marketing
-                </option>
+                <option value="Advertising & Marketing">Advertising & Marketing</option>
                 <option value="Gifting">Gifting</option>
                 <option value="Daily Home Needs">Daily Home Needs</option>
               </select>
@@ -143,9 +149,7 @@ const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertis
                 onChange={handleInputChange}
               >
                 <option value="">Select Sub Category</option>
-                <option value="Advertising & PR Agencies">
-                  Advertising & PR Agencies
-                </option>
+                <option value="Advertising & PR Agencies">Advertising & PR Agencies</option>
               </select>
             </div>
 
@@ -189,7 +193,6 @@ const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertis
             </div>
           </div>
 
-
           <div className="space-y-2">
             <Label>Advertisement Image</Label>
             <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
@@ -222,7 +225,7 @@ const AddNewAdvertisement: React.FC<AddNewAdvertisementProps> = ({ onAddAdvertis
           </div>
 
           <Button type="submit" className="bg-blue-500 hover:bg-blue-600 px-6">
-            Submit Advertise
+            Submit Advertisement
           </Button>
         </form>
       </div>

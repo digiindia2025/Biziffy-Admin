@@ -18,8 +18,8 @@
   import SupportTickets from "./pages/admin/SupportTickets";
   import Departments from "./pages/admin/Departments";
   import ContactUs from "./pages/admin/ContactUs";
-  import ChildCategories from "./pages/admin/ChildCategories";
-  import AddChildCategory from "./pages/admin/AddChildCategory";
+  // import ChildCategories from "./pages/admin/ChildCategories";
+  // import AddChildCategory from "./pages/admin/AddChildCategory";
   import ListingDetails from "./pages/admin/ListingDetails";
   import AllListings from "./pages/admin/AllListings";
   import AllAdvertisements from "./pages/admin/AllAdvertisements";
@@ -60,8 +60,8 @@
               <Route path="/admin/support/tickets" element={<ProtectedRoute><SupportTickets /></ProtectedRoute>} />
               <Route path="/admin/support/department" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
               <Route path="/admin/contact-us" element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
-              <Route path="/admin/child-categories" element={<ProtectedRoute><ChildCategories /></ProtectedRoute>} />
-              <Route path="/admin/child-categories/add" element={<ProtectedRoute><AddChildCategory /></ProtectedRoute>} />
+              {/* <Route path="/admin/child-categories" element={<ProtectedRoute><ChildCategories /></ProtectedRoute>} /> */}
+              {/* <Route path="/admin/child-categories/add" element={<ProtectedRoute><AddChildCategory /></ProtectedRoute>} /> */}
               <Route path="/admin/advertisements" element={<ProtectedRoute><AllAdvertisements /></ProtectedRoute>} />
               <Route path="/admin/advertisements/new" element={<ProtectedRoute><AddNewAdvertisement /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute><AllUsers /></ProtectedRoute>} />

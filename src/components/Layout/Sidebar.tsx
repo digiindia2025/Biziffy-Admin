@@ -315,7 +315,7 @@ export const Sidebar = () => {
 
 
           
-          <li>
+          {/* <li>
             <button 
               onClick={() => setOpenChildCategories(!openChildCategories)}
               className={cn(
@@ -355,7 +355,7 @@ export const Sidebar = () => {
                 </li>
               </ul>
             )}
-          </li>
+          </li> */}
           
           <li>
             <Link 
