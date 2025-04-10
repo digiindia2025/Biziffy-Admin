@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Settings } from "lucide-react";
 
+
 import gradientClasses from "../data/gradientClasses";
 import dashboardCardTemplates from "../data/dashboardCards";
 import { toast } from "@/components/ui/use-toast";

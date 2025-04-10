@@ -3,9 +3,10 @@ import axios from "axios";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, Pencil, Trash } from "lucide-react";
+import { Pencil, Eye, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CSVLink } from "react-csv";
+
 import {
   Table,
   TableBody,
@@ -15,52 +16,81 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const AllListings = () => {
-  const [listings, setListings] = useState([]);
+interface Listing {
+  _id: string;
+  title?: string;
+  category?: string;
+  user?: string;
+  createdDate?: string;
+  publishedDate?: string;
+  status?: string;
+  businessStatus?: string;
+  trustStatus?: string;
+}
+
+export const AllListings = () => {
+  const [listings, setListings] = useState<Listing[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAction, setSelectedAction] = useState("Bulk Action");
-  const [selectedListings, setSelectedListings] = useState([]);
+  const [selectedListings, setSelectedListings] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const listingsPerPage = 3;
+  const listingsPerPage = 5;
+  const [editingPublishStatusId, setEditingPublishStatusId] = useState<string | null>(null);
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
+  const [publishStatusOptions] = useState(["Pending", "Published", "Unpublished"]);
+  const [statusOptions] = useState(["Pending", "Approved", "Rejected"]);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/admin/listings");
-        setListings(res.data);
-      } catch (error) {
-        console.error("Failed to fetch listings", error);
-      }
-    };
-
     fetchListings();
-  }, []);
+  }, [currentPage]);
 
-  const filteredListings = listings.filter(
-    (listing) =>
-      listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.createdDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.publishedDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.businessStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      listing.trustStatus.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const fetchListings = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/admin/listings?page=${currentPage}&limit=${listingsPerPage}`);
+      setListings(res.data.listings);
+      setTotalPages(Math.ceil(res.data.total / listingsPerPage));
+    } catch (error) {
+      console.error("Failed to fetch listings", error);
+    }
+  };
 
-  const indexOfLast = currentPage * listingsPerPage;
-  const indexOfFirst = indexOfLast - listingsPerPage;
-  const currentListings = filteredListings.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredListings.length / listingsPerPage);
+  const filteredListings = listings.filter((listing) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      listing.title?.toLowerCase().includes(query) ||
+      listing.category?.toLowerCase().includes(query) ||
+      listing.user?.toLowerCase().includes(query) ||
+      listing.createdDate?.toLowerCase().includes(query) ||
+      listing.publishedDate?.toLowerCase().includes(query) ||
+      listing.status?.toLowerCase().includes(query) ||
+      listing.businessStatus?.toLowerCase().includes(query) ||
+      listing.trustStatus?.toLowerCase().includes(query)
+    );
+  });
+
+  const currentListings = filteredListings;
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  const handleBulkAction = () => {
-    if (selectedAction === "Bulk Action") return;
-    console.log(`${selectedAction} listings:`, selectedListings);
-    setSelectedListings([]);
+  const handleBulkAction = async () => {
+    
+    if (selectedAction === "Bulk Action" || selectedListings.length === 0) return;
+
+    try {
+      await axios.post(`http://localhost:5000/api/admin/listings/bulk-action`, {
+        ids: selectedListings,
+        action: selectedAction,
+        
+      });
+      fetchListings();
+      setSelectedListings([]);
+      setSelectedAction("Bulk Action");
+    } catch (error) {
+      console.error(`Failed to ${selectedAction} listings`, error);
+    }
   };
 
   const handleCheckboxChange = (id: string) => {
@@ -85,6 +115,8 @@ const AllListings = () => {
         return <span className="px-3 py-1 text-sm bg-green-100 text-green-800 rounded-full">Approved</span>;
       case "Pending":
         return <span className="px-3 py-1 text-sm bg-yellow-100 text-yellow-800 rounded-full">Pending</span>;
+      case "Rejected":
+        return <span className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded-full">Rejected</span>;
       default:
         return <span className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full">{status}</span>;
     }
@@ -98,6 +130,49 @@ const AllListings = () => {
   const getTrustStatus = (status: string) => {
     const color = status === "Approved" ? "bg-green-600" : "bg-yellow-600";
     return <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>{status} Trust Status</span>;
+  };
+
+  const handleUpdatePublishStatus = async (id: string, newStatus: string) => {
+    try {
+      await axios.patch(`http://localhost:5000/api/admin/listings/${id}`, { publishedDate: newStatus });
+      setListings(listings.map((listing) =>
+        listing._id === id ? { ...listing, publishedDate: newStatus } : listing
+      ));
+      setEditingPublishStatusId(null);
+    } catch (error) {
+      console.error("Failed to update publish status", error);
+    }
+  };
+
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    try {
+      await axios.patch(`http://localhost:5000/api/admin/listings/${id}`, { status: newStatus });
+      setListings(listings.map((listing) => {
+        if (listing._id === id) {
+          return {
+            ...listing,
+            status: newStatus,
+            businessStatus: newStatus === "Approved" ? "Approved" : "Not Approved",
+            trustStatus: newStatus === "Approved" || newStatus === "Pending" ? "Approved" : "Not Approved",
+          };
+        }
+        return listing;
+      }));
+      setEditingStatusId(null);
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  };
+
+  const handleDeleteListing = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this listing?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/admin/listings/${id}`);
+        fetchListings();
+      } catch (error) {
+        console.error("Failed to delete listing", error);
+      }
+    }
   };
 
   return (
@@ -119,7 +194,7 @@ const AllListings = () => {
             <option value="Approve">Approve</option>
             <option value="Reject">Reject</option>
           </select>
-          <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleBulkAction}>
+          <Button className="bg-blue-500 hover:bg-blue-600" onClick={handleBulkAction} disabled={selectedListings.length === 0}>
             Apply
           </Button>
         </div>
@@ -184,22 +259,54 @@ const AllListings = () => {
                 <TableCell>{listing.user}</TableCell>
                 <TableCell>{listing.createdDate}</TableCell>
                 <TableCell>
-                  <div className="flex flex-col gap-1">
-                    <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded inline-block w-fit">
-                      {listing.publishedDate}
-                    </span>
-                    <button className="p-2 bg-orange-200 rounded-md hover:bg-orange-300 transition-colors w-8 h-8 flex items-center justify-center">
-                      <Pencil className="w-4 h-4 text-orange-600" />
-                    </button>
-                  </div>
+                  {editingPublishStatusId === listing._id ? (
+                    <select
+                      className="px-2 py-1 border rounded-md"
+                      value={listing.publishedDate}
+                      onChange={(e) => handleUpdatePublishStatus(listing._id, e.target.value)}
+                      onBlur={() => setEditingPublishStatusId(null)}
+                      autoFocus
+                    >
+                      {publishStatusOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span>{listing.publishedDate}</span>
+                      <button
+                        onClick={() => setEditingPublishStatusId(listing._id)}
+                        className="p-1 bg-orange-200 rounded-md hover:bg-orange-300 transition-colors w-6 h-6 flex items-center justify-center"
+                      >
+                        <Pencil className="w-3 h-3 text-orange-600" />
+                      </button>
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
-                  <div className="flex flex-col gap-1">
-                    {getStatusBadge(listing.status)}
-                    <button className="p-2 bg-orange-200 rounded-md hover:bg-orange-300 transition-colors w-8 h-8 flex items-center justify-center">
-                      <Pencil className="w-4 h-4 text-orange-600" />
-                    </button>
-                  </div>
+                  {editingStatusId === listing._id ? (
+                    <select
+                      className="px-2 py-1 border rounded-md"
+                      value={listing.status}
+                      onChange={(e) => handleUpdateStatus(listing._id, e.target.value)}
+                      onBlur={() => setEditingStatusId(null)}
+                      autoFocus
+                    >
+                      {statusOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      {getStatusBadge(listing.status || "")}
+                      <button
+                        onClick={() => setEditingStatusId(listing._id)}
+                        className="p-1 bg-orange-200 rounded-md hover:bg-orange-300 transition-colors w-6 h-6 flex items-center justify-center"
+                      >
+                        <Pencil className="w-3 h-3 text-orange-600" />
+                      </button>
+                    </div>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-2">
@@ -210,14 +317,14 @@ const AllListings = () => {
                           View
                         </Button>
                       </Link>
-                      <Button size="sm" variant="destructive">
+                      <Button size="sm" variant="destructive" onClick={() => handleDeleteListing(listing._id)}>
                         <Trash className="h-4 w-4 mr-1" />
                         Delete
                       </Button>
                     </div>
                     <div className="flex flex-col gap-1">
-                      {getBusinessTrustStatus(listing.businessStatus)}
-                      {getTrustStatus(listing.trustStatus)}
+                      {getBusinessTrustStatus(listing.businessStatus || "Not Approved")}
+                      {getTrustStatus(listing.trustStatus || "Not Approved")}
                     </div>
                   </div>
                 </TableCell>
