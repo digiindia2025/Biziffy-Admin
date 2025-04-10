@@ -18,53 +18,64 @@ const Departments = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [newDepartment, setNewDepartment] = useState("");
   const departmentsPerPage = 4;
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const res = await axios.get("/api/departments");
-        console.log("API Response:", res.data);
-
-        if (Array.isArray(res.data)) {
-          setDepartments(res.data);
-        } else if (Array.isArray(res.data.departments)) {
-          setDepartments(res.data.departments);
-        } else {
-          throw new Error("Unexpected response structure");
-        }
-      } catch (error) {
-        console.error("Fetch error:", error);
-        toast({ title: "Error", description: "Failed to fetch departments." });
+  const fetchDepartments = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/departments");
+      if (Array.isArray(res.data)) {
+        setDepartments(res.data);
+      } else if (Array.isArray(res.data.departments)) {
+        setDepartments(res.data.departments);
+      } else {
+        throw new Error("Unexpected response structure");
       }
-    };
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to fetch departments." });
+    }
+  };
 
+  useEffect(() => {
     fetchDepartments();
   }, []);
 
-  const handleEdit = (id: string) => {
-    toast({ title: "Edit Department", description: `Edit department #${id}` });
+  const handleAddDepartment = async () => {
+    if (!newDepartment.trim()) return;
+
+    try {
+      const res = await axios.post("/api/departments", {
+        department: newDepartment,
+        status: "active",
+      });
+      toast({ title: "Added", description: "Department added successfully." });
+      setNewDepartment("");
+      fetchDepartments();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to add department." });
+    }
   };
 
-  const handleDelete = (id: string) => {
-    toast({
-      title: "Delete Department",
-      description: `Delete department #${id}? This action cannot be undone.`,
-    });
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`/api/departments/${id}`);
+      toast({ title: "Deleted", description: "Department deleted." });
+      fetchDepartments();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to delete department." });
+    }
   };
 
-  const handleEdit2 = (id: string) => {
-    toast({
-      title: "Edit Department Details",
-      description: `Edit additional details for department #${id}`,
-    });
-  };
-
-  const handleAddDepartment = () => {
-    toast({
-      title: "Add Department",
-      description: "Use Postman to add a new department.",
-    });
+  const handleEdit = async (id: string) => {
+    try {
+      await axios.put(`/api/departments/${id}`, {
+        status: "inactive",
+      });
+      toast({ title: "Updated", description: "Department marked inactive." });
+      fetchDepartments();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update department." });
+    }
   };
 
   const filteredDepartments = departments.filter((dept) =>
@@ -99,12 +110,20 @@ const Departments = () => {
   const totalPages = Math.ceil(filteredDepartments.length / departmentsPerPage);
 
   return (
-    <AdminLayout title="">
+    <AdminLayout title="Departments">
       {/* Add + Search + Export */}
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <Button onClick={handleAddDepartment} className="bg-blue-500 hover:bg-blue-600">
-          Add Department
-        </Button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Input
+            placeholder="New Department Name"
+            value={newDepartment}
+            onChange={(e) => setNewDepartment(e.target.value)}
+            className="w-64"
+          />
+          <Button onClick={handleAddDepartment} className="bg-blue-500 hover:bg-blue-600">
+            Add
+          </Button>
+        </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <div className="relative w-64">
@@ -169,12 +188,6 @@ const Departments = () => {
                   <div className="flex space-x-2">
                     <EditButton onClick={() => handleEdit(dept._id)} />
                     <DeleteButton onClick={() => handleDelete(dept._id)} />
-                    <Button
-                      onClick={() => handleEdit2(dept._id)}
-                      className="h-9 w-9 bg-yellow-500 hover:bg-yellow-600 text-white"
-                    >
-                      ✎
-                    </Button>
                   </div>
                 </td>
               </tr>
