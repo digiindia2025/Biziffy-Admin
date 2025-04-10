@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -11,18 +11,44 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { reviewsData } from "../data/reviewsData";
+import axios from "axios";
+
+type Review = {
+  _id: string;
+  userName: string;
+  title?: string;
+  email: string;
+  rating: number;
+  content: string;
+  date: string;
+};
 
 const Reviews = () => {
   const { toast } = useToast();
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
-  const handleApprove = (id: number) => {
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/reviews");
+        setReviews(res.data);
+      } catch (err) {
+        toast({
+          title: "Error fetching reviews",
+          description: "Please check backend connection.",
+        });
+      }
+    };
+    fetchReviews();
+  }, [toast]);
+
+  const handleApprove = (id: string) => {
     toast({
       title: "Review Approved",
-      description: `Review #${id} has been approved.`,
+      description: `Review with ID: ${id} has been approved.`,
     });
   };
 
@@ -34,11 +60,10 @@ const Reviews = () => {
   };
 
   const handleExportCSV = () => {
-    const headers = ["ID", "User Name", "Title", "Email", "Rating", "Content", "Date"];
+    const headers = ["User Name", "Title", "Email", "Rating", "Content", "Date"];
     const rows = filteredReviews.map((r) => [
-      r.id,
       r.userName,
-      r.title,
+      r.title || "-",
       r.email,
       r.rating,
       r.content,
@@ -52,7 +77,7 @@ const Reviews = () => {
     a.click();
   };
 
-  const filteredReviews = reviewsData.filter((r) =>
+  const filteredReviews = reviews.filter((r) =>
     Object.values(r).some((val) =>
       String(val).toLowerCase().includes(searchQuery.toLowerCase())
     )
@@ -71,7 +96,6 @@ const Reviews = () => {
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
     if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
-
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
@@ -119,9 +143,9 @@ const Reviews = () => {
                 </td>
               </tr>
             ) : (
-              currentReviews.map((review) => (
-                <tr key={review.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm">{review.id}</td>
+              currentReviews.map((review, index) => (
+                <tr key={review._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td className="px-6 py-4 text-sm">{review.userName}</td>
                   <td className="px-6 py-4 text-sm">{review.title || "-"}</td>
                   <td className="px-6 py-4 text-sm">{review.email}</td>
@@ -151,7 +175,7 @@ const Reviews = () => {
                   <td className="px-6 py-4 text-sm">{review.date}</td>
                   <td className="px-6 py-4 text-sm">
                     <Button
-                      onClick={() => handleApprove(review.id)}
+                      onClick={() => handleApprove(review._id)}
                       className="bg-green-600 text-white hover:bg-green-700"
                     >
                       Approve
