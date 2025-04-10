@@ -5,9 +5,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Settings } from "lucide-react";
+
 
 import gradientClasses from "../data/gradientClasses";
 import dashboardCardTemplates from "../data/dashboardCards";
+import { toast } from "@/components/ui/use-toast";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -26,7 +29,8 @@ const Dashboard = () => {
     reviews: 0,
     memberships: 0,
   });
-
+  const [customCards, setCustomCards] = useState<DashboardCardTemplate[]>([]);
+  
   const [isMobile, setIsMobile] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -120,6 +124,18 @@ const Dashboard = () => {
       <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
         <h1 className="text-2xl font-bold hidden md:block"></h1>
       </div>
+      
+      <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+  <h1 className="text-2xl font-bold hidden md:block"></h1>
+
+  <Link to="/admin/DashboardManager">
+    <Button variant="outline" className="flex items-center gap-2">
+      <span>Manage Dashboard</span>
+      <Settings className="w-4 h-4" />
+    </Button>
+  </Link>
+</div>
+
 
       <div className="grid gap-4 grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         {paginatedCards.map((card, idx) => (

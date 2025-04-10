@@ -1,61 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ViewButton, DeleteButton, EditButton } from "@/components/ui/table-actions";
 import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
+import axios from "axios";
 
-const supportTicketsData = [
-  {
-    id: 1,
-    title: "Package issues",
-    priority: "urgent",
-    dateTime: "10/03/2025 16:13:49",
-    status: "close",
-  },
-  {
-    id: 2,
-    title: "Login error",
-    priority: "high",
-    dateTime: "11/03/2025 12:00:00",
-    status: "open",
-  },
-  {
-    id: 3,
-    title: "Billing query",
-    priority: "medium",
-    dateTime: "12/03/2025 14:22:30",
-    status: "open",
-  },
-  {
-    id: 4,
-    title: "Missing invoice",
-    priority: "low",
-    dateTime: "12/03/2025 14:22:30",
-    status: "close",
-  },
-  {
-    id: 5,
-    title: "Withdrawal delay",
-    priority: "urgent",
-    dateTime: "13/03/2025 15:10:11",
-    status: "open",
-  },
-  {
-    id: 6,
-    title: "Unable to upload file",
-    priority: "high",
-    dateTime: "14/03/2025 10:35:47",
-    status: "close",
-  },
-];
+interface SupportTicket {
+  _id: string;
+  title: string;
+  priority: string;
+  dateTime: string;
+  status: string;
+}
 
 const SupportTickets = () => {
   const { toast } = useToast();
+  const [supportTicketsData, setSupportTicketsData] = useState<SupportTicket[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 4;
+
+  useEffect(() => {
+    const fetchSupportTickets = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/admin/support-tickets");
+        setSupportTicketsData(res.data.data);
+      } catch (error) {
+        console.error("Error fetching support tickets:", error);
+      }
+    };
+
+    fetchSupportTickets();
+  }, []);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -63,7 +41,7 @@ const SupportTickets = () => {
   };
 
   const filteredTickets = supportTicketsData.filter((ticket) =>
-    `${ticket.id} ${ticket.title} ${ticket.priority} ${ticket.status}`
+    `${ticket._id} ${ticket.title} ${ticket.priority} ${ticket.status}`
       .toLowerCase()
       .includes(searchTerm)
   );
@@ -77,7 +55,7 @@ const SupportTickets = () => {
     const csvContent = [
       ["ID", "Title", "Priority", "DateTime", "Status"],
       ...filteredTickets.map((ticket) => [
-        ticket.id,
+        ticket._id,
         ticket.title,
         ticket.priority,
         ticket.dateTime,
@@ -98,15 +76,15 @@ const SupportTickets = () => {
     document.body.removeChild(link);
   };
 
-  const handleView = (id: number) => {
+  const handleView = (id: string) => {
     toast({ title: "View Ticket", description: `View details for ticket #${id}` });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     toast({ title: "Delete Ticket", description: `Delete ticket #${id}?` });
   };
 
-  const handleEdit = (id: number) => {
+  const handleEdit = (id: string) => {
     toast({ title: "Edit Ticket", description: `Edit ticket #${id}` });
   };
 
@@ -170,9 +148,9 @@ const SupportTickets = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentTickets.map((ticket) => (
-              <tr key={ticket.id}>
+              <tr key={ticket._id}>
                 <td className="px-6 py-4"><input type="checkbox" /></td>
-                <td className="px-6 py-4">{ticket.id}</td>
+                <td className="px-6 py-4">{ticket._id.slice(-5)}</td>
                 <td className="px-6 py-4">{ticket.title}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 text-xs rounded-full font-semibold ${
@@ -197,9 +175,9 @@ const SupportTickets = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 space-x-2">
-                  <ViewButton onClick={() => handleView(ticket.id)} />
-                  <DeleteButton onClick={() => handleDelete(ticket.id)} />
-                  {ticket.status === "open" && <EditButton onClick={() => handleEdit(ticket.id)} />}
+                  <ViewButton onClick={() => handleView(ticket._id)} />
+                  <DeleteButton onClick={() => handleDelete(ticket._id)} />
+                  {ticket.status === "open" && <EditButton onClick={() => handleEdit(ticket._id)} />}
                 </td>
               </tr>
             ))}

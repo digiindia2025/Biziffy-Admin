@@ -11,6 +11,7 @@
   import Login from "./pages/Login";
   // import Dashboardmain from "./pages/admin/Dashboardmain";
   import Dashboard from "./pages/admin/Dashboard";
+  // import DashboardManager from "./pages/admin/DashboardManager";
   import Membership from "./pages/admin/Membership";
   import Reviews from "./pages/admin/Reviews";
   import Links from "./pages/admin/Links";
@@ -51,6 +52,7 @@
               <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               {/* <Route path="/admin" element={<ProtectedRoute><Dashboardmain /></ProtectedRoute>} /> */}
               <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              {/* <Route path="/admin/DashboardManager" element={<ProtectedRoute><DashboardManager /></ProtectedRoute>} /> */}
               <Route path="/admin/listings" element={<ProtectedRoute><AllListings /></ProtectedRoute>} />
               <Route path="/admin/listings/details/:id" element={<ProtectedRoute><ListingDetails /></ProtectedRoute>} />
               <Route path="/admin/membership" element={<ProtectedRoute><Membership /></ProtectedRoute>} />

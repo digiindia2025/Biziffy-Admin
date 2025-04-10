@@ -16,6 +16,7 @@ import {
   LogOut,
   Menu,
   X,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,7 @@ export const Sidebar = () => {
   const [openAdvertisementsManage, setOpenAdvertisementsManage] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
 
   const isActive = (path: string) => location.pathname === path;
 
