@@ -110,12 +110,13 @@ export const AllListings = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "Approved":
+    const normalized = status.toLowerCase();
+    switch (normalized) {
+      case "approved":
         return <span className="px-3 py-1 text-sm bg-green-100 text-green-800 rounded-full">Approved</span>;
-      case "Pending":
+      case "pending":
         return <span className="px-3 py-1 text-sm bg-yellow-100 text-yellow-800 rounded-full">Pending</span>;
-      case "Rejected":
+      case "rejected":
         return <span className="px-3 py-1 text-sm bg-red-100 text-red-800 rounded-full">Rejected</span>;
       default:
         return <span className="px-3 py-1 text-sm bg-gray-100 text-gray-800 rounded-full">{status}</span>;
@@ -123,14 +124,25 @@ export const AllListings = () => {
   };
 
   const getBusinessTrustStatus = (status: string) => {
-    const color = status === "Approved" ? "bg-blue-600" : "bg-red-600";
-    return <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>{status} Business Status</span>;
+    const normalized = status.toLowerCase();
+    const color = normalized === "approved" ? "bg-blue-600" : "bg-red-600";
+    return (
+      <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>
+        {status} Business Status
+      </span>
+    );
   };
-
+  
   const getTrustStatus = (status: string) => {
-    const color = status === "Approved" ? "bg-green-600" : "bg-yellow-600";
-    return <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>{status} Trust Status</span>;
+    const normalized = status.toLowerCase();
+    const color = normalized === "approved" ? "bg-green-600" : "bg-yellow-600";
+    return (
+      <span className={`px-2 py-1 text-xs ${color} text-white rounded-md`}>
+        {status} Trust Status
+      </span>
+    );
   };
+  
 
   const handleUpdatePublishStatus = async (id: string, newStatus: string) => {
     try {

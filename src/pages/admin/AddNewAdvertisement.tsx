@@ -153,18 +153,6 @@ const handleSubmit = async (e: React.FormEvent) => {
               </select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="childCategory">Child Category</Label>
-              <select
-                id="childCategory"
-                name="childCategory"
-                className="w-full px-3 py-2 border rounded-md"
-                value={formData.childCategory}
-                onChange={handleInputChange}
-              >
-                <option value="">Select Child Category</option>
-              </select>
-            </div>
 
             <div className="space-y-2">
               <Label htmlFor="redirectUrl">Redirect URL</Label>
