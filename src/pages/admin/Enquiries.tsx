@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import enquiriesData from "../data/enquiriesData"; // ✅ import from data
 
 import {
   Pagination,
@@ -19,12 +18,13 @@ const Enquiries = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const enquiriesPerPage = 7;
 
-  // ✅ Use local mock data instead of fetching
+  // ✅ Fetch data from backend API
   useEffect(() => {
     const loadEnquiries = async () => {
       try {
-        await new Promise((res) => setTimeout(res, 300)); // optional mock delay
-        setEnquiries(enquiriesData);
+        const response = await fetch("http://localhost:5000/api/enquiries");
+        const data = await response.json();
+        setEnquiries(data);
       } catch (error) {
         console.error("Failed to load enquiries:", error);
       }
@@ -33,7 +33,7 @@ const Enquiries = () => {
     loadEnquiries();
   }, []);
 
-  const filteredEnquiries = enquiries.filter((enquiry) =>
+  const filteredEnquiries = enquiries.filter((enquiry: any) =>
     Object.values(enquiry).some((val) =>
       String(val).toLowerCase().includes(searchQuery.toLowerCase())
     )
@@ -65,8 +65,14 @@ const Enquiries = () => {
 
   const exportToCSV = () => {
     const headers = ["ID", "User Name", "Title", "Name", "Requirement"];
-    const rows = filteredEnquiries.map(e => [e.id, e.userName, e.title, e.name, e.requirement]);
-    const csvContent = [headers, ...rows].map(row => row.join(",")).join("\n");
+    const rows = filteredEnquiries.map((e: any) => [
+      e._id,
+      e.userName,
+      e.title,
+      e.name,
+      e.requirement,
+    ]);
+    const csvContent = [headers, ...rows].map((row) => row.join(",")).join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
     const a = document.createElement("a");
@@ -125,8 +131,8 @@ const Enquiries = () => {
                 </td>
               </tr>
             ) : (
-              currentEnquiries.map((enquiry, index) => (
-                <tr key={enquiry.id} className="hover:bg-gray-50">
+              currentEnquiries.map((enquiry: any, index: number) => (
+                <tr key={enquiry._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-900">{indexOfFirst + index + 1}</td>
                   <td className="px-6 py-4 text-sm text-gray-900">{enquiry.userName || "-"}</td>
                   <td className="px-6 py-4 text-sm text-gray-900">{enquiry.title}</td>
