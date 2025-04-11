@@ -28,6 +28,7 @@ const Reviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [approvedIds, setApprovedIds] = useState<string[]>([]);
   const itemsPerPage = 4;
 
   useEffect(() => {
@@ -46,13 +47,29 @@ const Reviews = () => {
   }, [toast]);
 
   const handleApprove = (id: string) => {
-    toast({
-      title: "Review Approved",
-      description: `Review with ID: ${id} has been approved.`,
-    });
+    if (!approvedIds.includes(id)) {
+      setApprovedIds([...approvedIds, id]);
+      toast({
+        title: "Review Approved",
+        description: `Review with ID: ${id} has been approved successfully.`,
+      });
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this review?");
+    if (confirmDelete) {
+      setReviews((prev) => prev.filter((r) => r._id !== id));
+      toast({
+        title: "Review Deleted",
+        description: `Review with ID: ${id} has been deleted.`,
+      });
+    }
   };
 
   const handleApproveAll = () => {
+    const allIds = filteredReviews.map((r) => r._id);
+    setApprovedIds([...new Set([...approvedIds, ...allIds])]);
     toast({
       title: "All Reviews Approved",
       description: "All reviews have been approved successfully.",
@@ -92,7 +109,7 @@ const Reviews = () => {
   const paginate = (page: number) => setCurrentPage(page);
 
   const renderPageNumbers = () => {
-    const maxVisible = 4;
+    const maxVisible = 5;
     let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
     if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
@@ -125,7 +142,7 @@ const Reviews = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              {["SR. NO.", "USER NAME", "TITLE", "EMAIL", "RATING", "CONTENT", "DATE", "ACTION"].map((heading) => (
+              {["SR. NO.", "USER NAME", "TITLE", "EMAIL", "RATING", "CONTENT", "DATE", "ACTIONS"].map((heading) => (
                 <th
                   key={heading}
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -173,12 +190,24 @@ const Reviews = () => {
                   </td>
                   <td className="px-6 py-4 text-sm max-w-xs truncate">{review.content}</td>
                   <td className="px-6 py-4 text-sm">{review.date}</td>
-                  <td className="px-6 py-4 text-sm">
+                  <td className="px-6 py-4 text-sm space-x-2">
+                    {approvedIds.includes(review._id) ? (
+                      <Button disabled className="bg-green-600 text-white cursor-not-allowed">
+                        Approved
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => handleApprove(review._id)}
+                        className="bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Approve
+                      </Button>
+                    )}
                     <Button
-                      onClick={() => handleApprove(review._id)}
-                      className="bg-green-600 text-white hover:bg-green-700"
+                      onClick={() => handleDelete(review._id)}
+                      className="bg-red-600 text-white hover:bg-red-700"
                     >
-                      Approve
+                      Delete
                     </Button>
                   </td>
                 </tr>
