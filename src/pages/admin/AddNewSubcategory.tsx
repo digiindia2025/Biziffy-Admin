@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom"; // 👈 Added useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import {
@@ -26,9 +26,9 @@ import {
 
 // Dummy category list
 const categories = [
-  { id: 1, name: "Aman,gourav" },
-  { id: 2, name: "hello, hii" },
-  { id: 3, name: "fruits,main" }
+  { id: 1, name: "Electronics" },
+  { id: 2, name: "Clothing" },
+  { id: 3, name: "Fruits" },
 ];
 
 interface FormValues {
@@ -40,7 +40,7 @@ interface FormValues {
 
 const AddNewSubcategory = () => {
   const { toast } = useToast();
-  const navigate = useNavigate(); // 👈 useNavigate hook
+  const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
@@ -74,16 +74,15 @@ const AddNewSubcategory = () => {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/admin/subcategories/create", formData);
+      await axios.post("http://localhost:5000/api/admin/subcategories", formData);
+  
       toast({
         title: "Subcategory Created",
         description: `Subcategory "${data.name}" has been created successfully.`,
       });
       form.reset();
       setImagePreview(null);
-
-      // Redirect to All Subcategories page after successful submission
-      navigate("/admin/subcategories"); // 👈 Redirect here
+      navigate("/admin/subcategories");
     } catch (error) {
       console.error("Submission error:", error);
       toast({
@@ -127,14 +126,14 @@ const AddNewSubcategory = () => {
                   <div className="h-16 w-16 relative">
                     <img
                       src={imagePreview}
-                      alt="Image preview"
+                      alt="Preview"
                       className="h-full w-full object-cover rounded-md"
                     />
                   </div>
                 )}
               </div>
               <FormDescription>
-                Upload an image for this subcategory (recommended size: 200x200px).
+                Upload an image for this subcategory (recommended: 200x200px).
               </FormDescription>
             </FormItem>
 
@@ -158,7 +157,7 @@ const AddNewSubcategory = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>Select which main category this subcategory belongs to.</FormDescription>
+                  <FormDescription>Select which category this subcategory belongs to.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -181,7 +180,7 @@ const AddNewSubcategory = () => {
                       <SelectItem value="inactive">Inactive</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription>Set whether this subcategory is active or inactive.</FormDescription>
+                  <FormDescription>Set status for this subcategory.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
