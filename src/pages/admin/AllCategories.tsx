@@ -7,11 +7,19 @@ import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface Category {
   _id: string;
   name: string;
-  icon?: string;
+  icon?: string | File;
   status: string;
   createDate: string;
 }
@@ -23,13 +31,17 @@ const AllCategories = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const categoriesPerPage = 5;
 
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editCategory, setEditCategory] = useState<Category | null>(null);
+
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+
   const fetchCategories = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/categories");
-      // If your backend wraps data in { data: [...] }, change to: setCategories(res.data.data)
       setCategories(res.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
       toast({
         title: "Fetch Failed",
         description: "Could not load categories.",
@@ -51,12 +63,53 @@ const AllCategories = () => {
   const currentCategories = filteredCategories.slice(indexOfFirstCategory, indexOfLastCategory);
   const totalPages = Math.ceil(filteredCategories.length / categoriesPerPage);
 
-  const handleEdit = (id: string) => {
-    toast({ title: "Edit Category", description: `Edit category #${id}` });
+  const handleEdit = (category: Category) => {
+    setEditCategory(category);
+    setIsEditOpen(true);
+  };
+
+  const handleEditSubmit = async () => {
+    if (!editCategory) return;
+    try {
+      const formData = new FormData();
+      formData.append("name", editCategory.name);
+      formData.append("status", editCategory.status);
+      if (editCategory.icon instanceof File) {
+        formData.append("icon", editCategory.icon);
+      }
+
+      await axios.put(`http://localhost:5000/api/categories/${editCategory._id}`, formData);
+
+      toast({
+        title: "Category Updated",
+        description: "Changes saved successfully.",
+      });
+
+      fetchCategories();
+      setIsEditOpen(false);
+    } catch (error) {
+      toast({
+        title: "Update Failed",
+        description: "Could not update category.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = (id: string) => {
-    toast({ title: "Delete Category", description: `Delete category #${id}?` });
+    setCategoryToDelete(id);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/categories/${categoryToDelete}`);
+      setCategories(prev => prev.filter(cat => cat._id !== categoryToDelete));
+      toast({ title: "Category Deleted", description: "Category deleted successfully." });
+    } catch {
+      toast({ title: "Error", description: "Failed to delete category.", variant: "destructive" });
+    }
+    setIsDeleteConfirmOpen(false);
   };
 
   const handleExportToCSV = () => {
@@ -64,16 +117,11 @@ const AllCategories = () => {
     const rows = filteredCategories.map(cat => [
       cat._id,
       `"${cat.name}"`,
-      cat.icon || "",
+      typeof cat.icon === "string" ? cat.icon : "",
       cat.status,
       cat.createDate
     ]);
-
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(row => row.join(","))
-    ].join("\n");
-
+    const csvContent = [headers.join(","), ...rows.map(row => row.join(","))].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -82,7 +130,6 @@ const AllCategories = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
     toast({ title: "Exported", description: "Categories exported to CSV." });
   };
 
@@ -95,6 +142,7 @@ const AllCategories = () => {
 
   return (
     <AdminLayout title="All Categories">
+      {/* Top Controls */}
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-2">
           <select className="border rounded-md px-3 py-2 bg-white">
@@ -133,46 +181,43 @@ const AllCategories = () => {
         </div>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto rounded-md border">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3">
-                <input type="checkbox" className="rounded border-gray-300" />
-              </th>
+              <th className="px-6 py-3"><input type="checkbox" /></th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Icon</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Create Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentCategories.map((category) => (
               <tr key={category._id} className="hover:bg-gray-50">
+                <td className="px-6 py-4"><input type="checkbox" /></td>
+                <td className="px-6 py-4 text-sm">{category._id}</td>
+                <td className="px-6 py-4 text-sm">{category.name}</td>
                 <td className="px-6 py-4">
-                  <input type="checkbox" className="rounded border-gray-300" />
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">{category._id}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{category.name}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  {category.icon ? (
+                  {typeof category.icon === "string" ? (
                     <img src={category.icon} alt={category.name} className="h-10 w-10 rounded" />
                   ) : (
                     <div className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center text-gray-500">No icon</div>
                   )}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-4 text-sm">
                   <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${category.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                     {category.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-900">{category.createDate}</td>
+                <td className="px-6 py-4 text-sm">{category.createDate}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex space-x-2">
                     <DeleteButton onClick={() => handleDelete(category._id)} />
-                    <EditButton onClick={() => handleEdit(category._id)} />
+                    <EditButton onClick={() => handleEdit(category)} />
                   </div>
                 </td>
               </tr>
@@ -181,31 +226,79 @@ const AllCategories = () => {
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center mt-6 space-x-2">
-        <Button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          Previous
-        </Button>
-
+        <Button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</Button>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <Button
-            key={page}
-            variant={currentPage === page ? "default" : "outline"}
-            onClick={() => setCurrentPage(page)}
-          >
-            {page}
-          </Button>
+          <Button key={page} variant={currentPage === page ? "default" : "outline"} onClick={() => setCurrentPage(page)}>{page}</Button>
         ))}
-
-        <Button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next
-        </Button>
+        <Button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next</Button>
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Category</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Category Name</Label>
+              <Input
+                value={editCategory?.name || ""}
+                onChange={(e) =>
+                  setEditCategory((prev) =>
+                    prev ? { ...prev, name: e.target.value } : null
+                  )
+                }
+              />
+            </div>
+            <div>
+              <Label>Status</Label>
+              <select
+                className="w-full border px-3 py-2 rounded"
+                value={editCategory?.status}
+                onChange={(e) =>
+                  setEditCategory((prev) =>
+                    prev ? { ...prev, status: e.target.value } : null
+                  )
+                }
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div>
+              <Label>Icon</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  setEditCategory((prev) =>
+                    prev && e.target.files
+                      ? { ...prev, icon: e.target.files[0] }
+                      : prev
+                  )
+                }
+              />
+              {editCategory?.icon && (
+                <img
+                  src={
+                    typeof editCategory.icon === "string"
+                      ? editCategory.icon
+                      : URL.createObjectURL(editCategory.icon)
+                  }
+                  alt="Preview"
+                  className="h-12 w-12 mt-2 rounded border"
+                />
+              )}
+            </div>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button onClick={handleEditSubmit}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
