@@ -43,7 +43,8 @@ const AllUsers = () => {
     fetch("http://localhost:5000/api/admin/users")
       .then((res) => res.json())
       .then((data) => {
-        setUserList(data);
+        console.log("Fetched users:", data); // ✅ Good for debugging
+        setUserList(data);                   // ⬅️ Sets the user list
         setLoading(false);
       })
       .catch((err) => {
@@ -52,6 +53,7 @@ const AllUsers = () => {
         setLoading(false);
       });
   }, []);
+  
 
   const handleDeleteUser = async (userId: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this user?");
