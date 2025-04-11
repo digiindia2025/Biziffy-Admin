@@ -7,6 +7,7 @@ import {
   DeleteButton,
   EditButton,
 } from "@/components/ui/table-actions";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Search } from "lucide-react";
 import axios from "axios";
@@ -25,6 +26,12 @@ const SupportTickets = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 4;
+
+  const [viewModal, setViewModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+
+  const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
 
   const fetchSupportTickets = async () => {
     try {
@@ -80,34 +87,50 @@ const SupportTickets = () => {
     document.body.removeChild(link);
   };
 
-  const handleView = (id: string) => {
-    toast({ title: "View Ticket", description: `View details for ticket #${id}` });
+  const handleView = (ticket: SupportTicket) => {
+    setSelectedTicket(ticket);
+    setViewModal(true);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleEdit = (ticket: SupportTicket) => {
+    setSelectedTicket(ticket);
+    setEditModal(true);
+  };
+
+  const handleDelete = (ticket: SupportTicket) => {
+    setSelectedTicket(ticket);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedTicket) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admin/support-tickets/${id}`);
-      toast({ title: "Deleted", description: `Ticket #${id} deleted successfully` });
+      await axios.delete(`http://localhost:5000/api/admin/support-tickets/${selectedTicket._id}`);
+      toast({ title: "Deleted", description: `Ticket deleted successfully.` });
+      setDeleteModal(false);
       fetchSupportTickets();
     } catch (error) {
       toast({ title: "Error", description: "Failed to delete ticket" });
     }
   };
 
-  const handleEdit = (id: string) => {
-    toast({ title: "Edit Ticket", description: `Edit ticket #${id}` });
-  };
-
-  const handleAddTicket = () => {
-    toast({ title: "Add Ticket", description: "Open form to add a new support ticket" });
-  };
-
-  const handleApplyBulkAction = () => {
-    toast({ title: "Bulk Action", description: "Apply bulk action to selected tickets" });
+  const handleStatusChange = async (newStatus: string) => {
+    if (!selectedTicket) return;
+    try {
+      await axios.put(`http://localhost:5000/api/admin/support-tickets/${selectedTicket._id}`, {
+        status: newStatus,
+      });
+      toast({ title: "Updated", description: `Ticket status changed to ${newStatus}` });
+      setEditModal(false);
+      fetchSupportTickets();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update status" });
+    }
   };
 
   return (
     <AdminLayout title="Support Tickets">
+      {/* Top Controls */}
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-2">
           <select className="border rounded-md px-3 py-2 bg-white">
@@ -116,13 +139,13 @@ const SupportTickets = () => {
             <option>Mark as Closed</option>
             <option>Delete Selected</option>
           </select>
-          <Button onClick={handleApplyBulkAction} className="bg-blue-500 hover:bg-blue-600">
+          <Button onClick={() => toast({ title: "Bulk Action", description: "Action applied" })} className="bg-blue-500 hover:bg-blue-600">
             Apply
           </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <Button onClick={handleAddTicket} className="bg-blue-500 hover:bg-blue-600">
+          <Button className="bg-blue-500 hover:bg-blue-600">
             Add Ticket
           </Button>
 
@@ -143,6 +166,7 @@ const SupportTickets = () => {
         </div>
       </div>
 
+      {/* Ticket Table */}
       <div className="overflow-x-auto rounded-md border">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -185,9 +209,9 @@ const SupportTickets = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 space-x-2">
-                  <ViewButton onClick={() => handleView(ticket._id)} />
-                  <DeleteButton onClick={() => handleDelete(ticket._id)} />
-                  {ticket.status === "open" && <EditButton onClick={() => handleEdit(ticket._id)} />}
+                  <ViewButton onClick={() => handleView(ticket)} />
+                  <DeleteButton onClick={() => handleDelete(ticket)} />
+                  {ticket.status === "open" && <EditButton onClick={() => handleEdit(ticket)} />}
                 </td>
               </tr>
             ))}
@@ -195,6 +219,7 @@ const SupportTickets = () => {
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center mt-6 space-x-2">
         <Button
           disabled={currentPage === 1}
@@ -218,6 +243,65 @@ const SupportTickets = () => {
           Next
         </Button>
       </div>
+
+      {/* View Dialog */}
+      {selectedTicket && (
+        <Dialog open={viewModal} onOpenChange={setViewModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Ticket Details</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-2">
+              <p><strong>ID:</strong> {selectedTicket._id}</p>
+              <p><strong>Title:</strong> {selectedTicket.title}</p>
+              <p><strong>Priority:</strong> {selectedTicket.priority}</p>
+              <p><strong>Date:</strong> {selectedTicket.dateTime}</p>
+              <p><strong>Status:</strong> {selectedTicket.status}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Edit Dialog */}
+      {selectedTicket && (
+        <Dialog open={editModal} onOpenChange={setEditModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Ticket Status</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Button
+                onClick={() => handleStatusChange("open")}
+                className="w-full bg-green-500"
+              >
+                Mark as Open
+              </Button>
+              <Button
+                onClick={() => handleStatusChange("closed")}
+                className="w-full bg-red-500"
+              >
+                Mark as Closed
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {selectedTicket && (
+        <Dialog open={deleteModal} onOpenChange={setDeleteModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Are you sure?</DialogTitle>
+            </DialogHeader>
+            <p>Do you really want to delete this ticket?</p>
+            <div className="flex justify-end space-x-2 mt-4">
+              <Button variant="outline" onClick={() => setDeleteModal(false)}>Cancel</Button>
+              <Button onClick={confirmDelete} className="bg-red-500 text-white">Delete</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </AdminLayout>
   );
 };

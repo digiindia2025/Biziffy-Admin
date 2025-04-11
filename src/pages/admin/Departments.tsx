@@ -6,6 +6,22 @@ import { EditButton, DeleteButton } from "@/components/ui/table-actions";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Department {
   _id: string;
@@ -19,6 +35,8 @@ const Departments = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [newDepartment, setNewDepartment] = useState("");
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedDept, setSelectedDept] = useState<Department | null>(null);
   const departmentsPerPage = 4;
 
   const fetchDepartments = async () => {
@@ -42,9 +60,8 @@ const Departments = () => {
 
   const handleAddDepartment = async () => {
     if (!newDepartment.trim()) return;
-
     try {
-      const res = await axios.post("/api/departments", {
+      await axios.post("http://localhost:5000/api/departments", {
         department: newDepartment,
         status: "active",
       });
@@ -58,24 +75,33 @@ const Departments = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`/api/departments/${id}`);
+      await axios.delete(`http://localhost:5000/api/departments/${id}`);
       toast({ title: "Deleted", description: "Department deleted." });
+      setEditModalOpen(false);
       fetchDepartments();
     } catch (error) {
       toast({ title: "Error", description: "Failed to delete department." });
     }
   };
 
-  const handleEdit = async (id: string) => {
+  const handleUpdate = async () => {
+    if (!selectedDept) return;
     try {
-      await axios.put(`/api/departments/${id}`, {
-        status: "inactive",
+      await axios.put(`http://localhost:5000/api/departments/${selectedDept._id}`, {
+        department: selectedDept.department,
+        status: selectedDept.status,
       });
-      toast({ title: "Updated", description: "Department marked inactive." });
+      toast({ title: "Updated", description: "Department updated successfully." });
+      setEditModalOpen(false);
       fetchDepartments();
     } catch (error) {
       toast({ title: "Error", description: "Failed to update department." });
     }
+  };
+
+  const openEditModal = (dept: Department) => {
+    setSelectedDept({ ...dept });
+    setEditModalOpen(true);
   };
 
   const filteredDepartments = departments.filter((dept) =>
@@ -186,7 +212,7 @@ const Departments = () => {
                 </td>
                 <td className="px-6 py-4 text-sm font-medium">
                   <div className="flex space-x-2">
-                    <EditButton onClick={() => handleEdit(dept._id)} />
+                    <EditButton onClick={() => openEditModal(dept)} />
                     <DeleteButton onClick={() => handleDelete(dept._id)} />
                   </div>
                 </td>
@@ -221,6 +247,52 @@ const Departments = () => {
           Next
         </Button>
       </div>
+
+      {/* Edit Modal */}
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Department</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label>Department Name</Label>
+              <Input
+                value={selectedDept?.department || ""}
+                onChange={(e) =>
+                  setSelectedDept((prev) => (prev ? { ...prev, department: e.target.value } : prev))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select
+                value={selectedDept?.status || "active"}
+                onValueChange={(value) =>
+                  setSelectedDept((prev) => (prev ? { ...prev, status: value } : prev))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="flex justify-between">
+            <Button
+              variant="destructive"
+              onClick={() => handleDelete(selectedDept?._id || "")}
+            >
+              Delete
+            </Button>
+            <Button onClick={handleUpdate}>Update</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
