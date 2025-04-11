@@ -53,6 +53,23 @@ const AllUsers = () => {
       });
   }, []);
 
+  const handleDeleteUser = async (userId: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this user?");
+    if (!confirmed) return;
+  
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setUserList(userList.filter((u) => u._id !== userId));
+      }
+    } catch (err) {
+      console.error("Error deleting user:", err);
+    }
+  };
+  
+
   const filteredUsers = userList.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -197,9 +214,16 @@ const AllUsers = () => {
                         <Button size="sm" variant="outline">
                           <Lock className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+
+                        {/* deleet button upadte */}
+                        <Button
+                       size="sm"
+                        variant="destructive"
+                      onClick={() => handleDeleteUser(user._id)}
+                                                                >
+  <Trash2 className="h-4 w-4" />
+</Button>
+
                       </div>
                     </TableCell>
                   </TableRow>
