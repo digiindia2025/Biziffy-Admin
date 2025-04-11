@@ -13,6 +13,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 const API_BASE_URL = "http://localhost:5000/api/links";
 
@@ -21,9 +23,13 @@ const Links = () => {
   const [links, setLinks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedLink, setSelectedLink] = useState<any>(null);
+  const [formData, setFormData] = useState({ title: "", link: "" });
   const itemsPerPage = 4;
 
-  // 🔄 Fetch links
   const fetchLinks = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/all`);
@@ -37,34 +43,47 @@ const Links = () => {
     fetchLinks();
   }, []);
 
-  // ✏️ Edit button (placeholder)
-  const handleEdit = (id: string) => {
-    toast({
-      title: "Edit Link",
-      description: `Open edit modal for link ID: ${id}`,
-    });
-  };
-
-  // ❌ Delete link
-  const handleDelete = async (id: string) => {
+  const handleAddSubmit = async () => {
     try {
-      await axios.delete(`${API_BASE_URL}/delete/${id}`);
-      toast({ title: "Link deleted", description: `Link #${id} deleted.` });
+      await axios.post(`${API_BASE_URL}/create`, formData);
+      toast({ title: "Link Added", description: "New link successfully created." });
+      setShowAddModal(false);
+      setFormData({ title: "", link: "" });
       fetchLinks();
-    } catch (error) {
-      toast({ title: "Delete failed", description: "Could not delete the link." });
+    } catch {
+      toast({ title: "Error", description: "Failed to add link." });
     }
   };
 
-  // ➕ Add new link (placeholder)
-  const handleAddNew = () => {
-    toast({
-      title: "Add New Link",
-      description: "Open modal to add new link",
-    });
+  const handleEdit = (link: any) => {
+    setSelectedLink(link);
+    setFormData({ title: link.title, link: link.link });
+    setShowEditModal(true);
   };
 
-  // 📤 Export CSV
+  const handleEditSubmit = async () => {
+    try {
+      await axios.put(`${API_BASE_URL}/update/${selectedLink._id}`, formData);
+      toast({ title: "Link Updated", description: "Link successfully updated." });
+      setShowEditModal(false);
+      setFormData({ title: "", link: "" });
+      fetchLinks();
+    } catch {
+      toast({ title: "Error", description: "Failed to update link." });
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/delete/${selectedLink._id}`);
+      toast({ title: "Link Deleted", description: `Link #${selectedLink._id} deleted.` });
+      setShowDeleteConfirm(false);
+      fetchLinks();
+    } catch {
+      toast({ title: "Delete Failed", description: "Could not delete the link." });
+    }
+  };
+
   const handleExportCSV = () => {
     const headers = ["ID", "Link", "Title"];
     const rows = filteredLinks.map((link: any) => [link._id, link.link, link.title]);
@@ -76,7 +95,6 @@ const Links = () => {
     a.click();
   };
 
-  // 🔍 Filtered + Paginated Links
   const filteredLinks = links.filter((link: any) =>
     Object.values(link).some((val) =>
       String(val).toLowerCase().includes(searchQuery.toLowerCase())
@@ -102,6 +120,7 @@ const Links = () => {
 
   return (
     <AdminLayout title="Links">
+      {/* Top Controls */}
       <div className="mb-6 flex justify-between items-center">
         <Input
           placeholder="Search links..."
@@ -116,12 +135,13 @@ const Links = () => {
           <Button onClick={handleExportCSV} className="bg-green-500 hover:bg-green-600">
             Export to CSV
           </Button>
-          <Button onClick={handleAddNew} className="bg-blue-500 hover:bg-blue-600">
+          <Button onClick={() => setShowAddModal(true)} className="bg-blue-500 hover:bg-blue-600">
             Add New Link
           </Button>
         </div>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto rounded-md border">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -153,10 +173,15 @@ const Links = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{link.title}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <EditButton onClick={() => handleEdit(link._id)} />
+                    <EditButton onClick={() => handleEdit(link)} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <DeleteButton onClick={() => handleDelete(link._id)} />
+                    <DeleteButton
+                      onClick={() => {
+                        setSelectedLink(link);
+                        setShowDeleteConfirm(true);
+                      }}
+                    />
                   </td>
                 </tr>
               ))
@@ -165,6 +190,7 @@ const Links = () => {
         </table>
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="py-4 flex justify-end">
           <Pagination>
@@ -198,6 +224,68 @@ const Links = () => {
           </Pagination>
         </div>
       )}
+
+      {/* Add Modal */}
+      <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Link</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Title</Label>
+              <Input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+            </div>
+            <div>
+              <Label>Link</Label>
+              <Input value={formData.link} onChange={(e) => setFormData({ ...formData, link: e.target.value })} />
+            </div>
+            <Button onClick={handleAddSubmit} className="w-full bg-blue-600 hover:bg-blue-700">
+              Submit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Modal */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Link</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Title</Label>
+              <Input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+            </div>
+            <div>
+              <Label>Link</Label>
+              <Input value={formData.link} onChange={(e) => setFormData({ ...formData, link: e.target.value })} />
+            </div>
+            <Button onClick={handleEditSubmit} className="w-full bg-yellow-600 hover:bg-yellow-700">
+              Update
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+          </DialogHeader>
+          <p>This action will permanently delete the link.</p>
+          <div className="flex justify-end gap-4">
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
