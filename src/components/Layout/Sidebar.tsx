@@ -214,7 +214,7 @@ export const Sidebar = () => {
                     All Users
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link 
                     to="/admin/users/deactivated" 
                     className={cn(
@@ -224,7 +224,7 @@ export const Sidebar = () => {
                   >
                     Deactivated Users
                   </Link>
-                </li>
+                </li> */}
               </ul>
             )}
           </li>

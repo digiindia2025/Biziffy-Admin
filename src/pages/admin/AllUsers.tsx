@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AdminLayout } from "@/components/Layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, Lock, Trash2 } from "lucide-react";
+import { Eye, Lock, Trash2, Pencil } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -35,42 +35,70 @@ const AllUsers = () => {
   const [userList, setUserList] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
   const usersPerPage = 5;
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:5000/api/admin/users")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched users:", data); // ✅ Good for debugging
-        setUserList(data);                   // ⬅️ Sets the user list
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching users", err);
-        setError("Failed to load users.");
-        setLoading(false);
-      });
+    fetchUsers();
   }, []);
-  
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/users");
+      const data = await res.json();
+      setUserList(data);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Failed to load users.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDeleteUser = async (userId: string) => {
     const confirmed = window.confirm("Are you sure you want to delete this user?");
     if (!confirmed) return;
-  
+
     try {
       const res = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
         method: "DELETE",
       });
       if (res.ok) {
-        setUserList(userList.filter((u) => u._id !== userId));
+        setUserList((prev) => prev.filter((u) => u._id !== userId));
       }
     } catch (err) {
       console.error("Error deleting user:", err);
     }
   };
-  
+
+  const handleUpdateStatus = async (userId: string, newStatus: UserData["status"]) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/toggle-status`
+, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUserList((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === updatedUser._id ? updatedUser : user
+          )
+        );
+        setEditingStatusId(null);
+      } else {
+        console.error("Failed to update user status");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   const filteredUsers = userList.filter((user) =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -83,45 +111,7 @@ const AllUsers = () => {
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  const getStatusBadge = (status: UserData["status"]) => {
-    const badgeColor =
-      status === "Active"
-        ? "green"
-        : status === "Inactive"
-        ? "yellow"
-        : "red";
-    return (
-      <span
-        className={`px-3 py-1 text-sm bg-${badgeColor}-100 text-${badgeColor}-800 rounded-full`}
-      >
-        {status}
-      </span>
-    );
-  };
-
-  const handleViewUserDetails = (userId: string) => {
-    navigate(`/admin/users/${userId}`);
-  };
-
-  const exportToCSV = () => {
-    const headers = ["ID", "Name", "Email", "Phone", "Status"];
-    const rows = filteredUsers.map((u) => [
-      u._id,
-      u.name,
-      u.email,
-      u.phone,
-      u.status,
-    ]);
-    const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "users.csv";
-    a.click();
-  };
+  const paginate = (page: number) => setCurrentPage(page);
 
   const renderPageNumbers = () => {
     const maxVisible = 4;
@@ -131,15 +121,42 @@ const AllUsers = () => {
       start = Math.max(1, end - maxVisible + 1);
     }
 
-    const pageNumbers = [];
+    const pages = [];
     for (let i = start; i <= end; i++) {
-      pageNumbers.push(i);
+      pages.push(i);
     }
-    return pageNumbers;
+    return pages;
+  };
+
+  const exportToCSV = () => {
+    const headers = ["ID", "Name", "Email", "Phone", "Status"];
+    const rows = filteredUsers.map((u) => [u._id, u.name, u.email, u.phone, u.status]);
+    const csvContent = [headers, ...rows].map((r) => r.join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "users.csv";
+    a.click();
+  };
+
+  const getStatusColor = (status: UserData["status"]) => {
+    switch (status) {
+      case "Active":
+        return "bg-green-100 text-green-800";
+      case "Inactive":
+        return "bg-yellow-100 text-yellow-800";
+      case "Deactivated":
+        return "bg-red-100 text-red-800";
+    }
+  };
+
+  const handleViewUserDetails = (userId: string) => {
+    navigate(`/admin/users/${userId}`);
   };
 
   return (
-    <AdminLayout title="">
+    <AdminLayout title="All Users">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">All Users</h1>
       </div>
@@ -202,7 +219,31 @@ const AllUsers = () => {
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.phone}</TableCell>
-                    <TableCell>{getStatusBadge(user.status)}</TableCell>
+                    <TableCell>
+                      <div className="relative inline-block">
+                        {editingStatusId === user._id ? (
+                          <div className="absolute z-10 bg-white border rounded shadow-md">
+                            {["Active", "Inactive", "Deactivated"].map((status) => (
+                              <div
+                                key={status}
+                                className="px-3 py-1 cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleUpdateStatus(user._id, status as UserData["status"])}
+                              >
+                                {status}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => setEditingStatusId(user._id)}
+                            className={`px-3 py-1 text-sm rounded-full cursor-pointer inline-flex items-center gap-1 ${getStatusColor(user.status)}`}
+                          >
+                            {user.status}
+                            <Pencil className="w-3 h-3 opacity-60" />
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Button
@@ -216,16 +257,13 @@ const AllUsers = () => {
                         <Button size="sm" variant="outline">
                           <Lock className="h-4 w-4" />
                         </Button>
-
-                        {/* deleet button upadte */}
                         <Button
-                       size="sm"
-                        variant="destructive"
-                      onClick={() => handleDeleteUser(user._id)}
-                                                                >
-  <Trash2 className="h-4 w-4" />
-</Button>
-
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDeleteUser(user._id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -253,9 +291,7 @@ const AllUsers = () => {
                   <PaginationItem>
                     <PaginationNext
                       href="#"
-                      onClick={() =>
-                        paginate(Math.min(totalPages, currentPage + 1))
-                      }
+                      onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
                     />
                   </PaginationItem>
